@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# alttown_areantwo_pitching
-Arena Two Pitching &amp; Demo
-=======
 # Arena Two × Alt.town — Pitching & Demo
 
 Arena Two(Omar Rahim)에게 Alt.town의 web 2.5 트레이딩 엔진 기반 확장을 제안하는 **제안서 + 인터랙티브 데모**입니다.
