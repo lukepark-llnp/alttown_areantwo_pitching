@@ -176,9 +176,20 @@ tr.click:hover{background:var(--panel2);cursor:pointer}
 .pay-opt button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12.5px}
 .pay-opt button.on{border-color:var(--yellow);color:var(--yellow)}
 footer{border-top:1px solid var(--line);padding:26px 20px;color:var(--dim);font-size:11px;text-align:center;background:var(--bg2)}
+.compare{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:200;display:flex;gap:4px;background:rgba(10,11,11,.9);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:30px;padding:4px}
+.compare a{font-family:'Bebas Neue','Noto Sans KR';font-size:13px;letter-spacing:.04em;padding:7px 15px;border-radius:24px;color:var(--dim);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.compare a.on{background:var(--yellow);color:#111}
+.compare a:not(.on):hover{color:var(--text)}
+@media(max-width:700px){.compare{display:none}}
+@media(min-width:701px){.hd{padding-top:52px}}
 </style>
 </head>
 <body>
+
+<div class="compare">
+  <a href="demo-fan.html">👤 <span data-i18n="cmp_fan">Fan · Web 2.5</span></a>
+  <a class="on" href="demo.html">⚙️ <span data-i18n="cmp_eng">Engine · Web 3.0</span></a>
+</div>
 
 <header>
   <div class="hd">
@@ -569,6 +580,7 @@ TEAMS.forEach(t=>{
 
 /* =============== i18n =============== */
 const KR = {
+  cmp_fan:"팬 · Web 2.5", cmp_eng:"엔진 · Web 3.0",
   hd_demo:"인터랙티브 데모 · 시뮬레이션 데이터", hd_base:"BASE · 가스비 <$0.01", hd_credits:"크레딧", hd_back:"← 제안서",
   tab_town:"TOWN — 마켓", tab_presale:"프리세일", tab_match:"매치데이", tab_stake:"스테이킹", tab_uponly:"UP ONLY", tab_gov:"거버넌스", tab_wallet:"내 지갑",
   town_h:"구단 토큰 마켓", town_sub:"온체인 오더북 · 아레나 크레딧 호가 (100 ACR = 1 USDT) · 수수료 1% → 50% $ATWO 소각",

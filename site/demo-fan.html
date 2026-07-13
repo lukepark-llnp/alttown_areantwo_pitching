@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arena Two — Fan App (Web 2.5)</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Metrophobic&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#F3FF3D; --yellow-dark:#e6e600; --bg:#0f1010; --bg2:#151616; --panel:#1c1d1d;
+  --panel2:#262727; --line:#333433; --text:#fcfcf7; --muted:#b6bbc0; --dim:#868b90;
+  --red:#ff6b6b; --green:#4ecb71; --blue:#4a90e2; --card-r:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0b0b;color:var(--text);font-family:'Metrophobic','Noto Sans KR',-apple-system,sans-serif;font-size:15px;line-height:1.6;
+  background-image:radial-gradient(120% 60% at 50% -10%, rgba(243,255,61,.06), transparent 60%);min-height:100vh}
+body.kr{font-family:'Noto Sans KR','Metrophobic',sans-serif}
+h1,h2,h3,h4,.bebas{font-family:'Bebas Neue','Noto Sans KR',Impact,sans-serif;font-weight:400;letter-spacing:.01em}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit;background:var(--bg2);border:1.5px solid var(--line);color:var(--text);border-radius:12px;padding:13px 15px;font-size:16px;width:100%}
+input:focus{outline:none;border-color:var(--yellow)}
+.mono{font-variant-numeric:tabular-nums}
+/* ===== compare switcher (fixed top) ===== */
+.compare{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:120;display:flex;gap:4px;background:rgba(10,11,11,.85);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:30px;padding:4px}
+.compare a{font-family:'Bebas Neue','Noto Sans KR';font-size:13px;letter-spacing:.04em;padding:7px 15px;border-radius:24px;color:var(--dim);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.compare a.on{background:var(--yellow);color:#111}
+.compare a:not(.on):hover{color:var(--text)}
+/* ===== app shell (phone-ish column) ===== */
+.app{max-width:500px;margin:0 auto;min-height:100vh;background:var(--bg);border-left:1px solid var(--line);border-right:1px solid var(--line);
+  padding-bottom:88px;position:relative;box-shadow:0 0 80px rgba(0,0,0,.6)}
+.appbar{position:sticky;top:0;z-index:80;background:rgba(15,16,16,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:60px 20px 12px}
+.appbar-row{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand img{height:20px}
+.brand .fan{font-family:'Bebas Neue';font-size:15px;color:var(--yellow);letter-spacing:.06em;border:1px solid rgba(243,255,61,.4);border-radius:5px;padding:1px 7px}
+.appbar .spacer{margin-left:auto}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:15px}
+.icon-btn:hover{border-color:var(--yellow)}
+.lang-btn{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:7px 12px;font-size:12.5px}
+.lang-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.sim-note{margin-top:9px;font-size:11px;color:var(--dim);display:flex;align-items:center;gap:6px}
+.sim-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+/* peek toggle */
+.peek-toggle{display:flex;align-items:center;gap:8px;margin-top:11px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:9px 13px;font-size:12.5px;color:var(--muted)}
+.peek-toggle .tg{margin-left:auto;width:40px;height:23px;border-radius:14px;background:#3a3b3b;position:relative;transition:.2s;flex:none}
+.peek-toggle .tg::after{content:'';position:absolute;top:2.5px;left:2.5px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+body.peek-on .peek-toggle .tg{background:var(--yellow)}
+body.peek-on .peek-toggle .tg::after{transform:translateX(17px)}
+body.peek-on .peek-toggle{border-color:var(--yellow);color:var(--text)}
+.peek-toggle .lab b{color:var(--text);font-weight:700}
+/* peek annotations */
+.peek{display:none;font-family:'Metrophobic',monospace;font-size:11px;color:#7fd0ff;background:rgba(74,144,226,.08);border-left:2px solid #4a90e2;padding:5px 9px;margin-top:7px;border-radius:0 6px 6px 0;letter-spacing:.01em;line-height:1.5}
+body.peek-on .peek{display:block}
+.peek b{color:#a9e0ff}
+/* ===== screens ===== */
+main{padding:18px 16px 0}
+.screen{display:none}
+.screen.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.h-title{font-size:30px;line-height:1.05;text-transform:uppercase;margin-bottom:3px}
+.h-sub{color:var(--dim);font-size:13px;margin-bottom:18px}
+/* club cards (Back a club) */
+.club{background:var(--panel);border:1px solid var(--line);border-radius:var(--card-r);padding:15px;margin-bottom:12px;display:flex;align-items:center;gap:13px;transition:.15s}
+.club:active{transform:scale(.99)}
+.club .cr{width:52px;height:52px;flex:none}
+.club .cr img,.club .cr svg{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(0,0,0,.5))}
+.club .info{flex:1;min-width:0}
+.club .info h3{font-size:19px;text-transform:uppercase;line-height:1.1}
+.club .info .who{color:var(--dim);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.club .val{text-align:right;flex:none}
+.club .val .v{font-family:'Bebas Neue';font-size:20px}
+.club .val .pct{font-size:12px;font-weight:700}
+.up{color:var(--green)} .dn{color:var(--red)}
+.club .back-btn{background:var(--yellow);color:#111;font-family:'Bebas Neue';font-size:15px;letter-spacing:.03em;border-radius:12px;padding:10px 0;width:100%;margin-top:0}
+.spark{width:52px;height:26px;display:block}
+.back-btn.full{width:100%;padding:15px;font-size:19px;border-radius:14px;margin-top:6px}
+.back-btn.full:active{background:var(--yellow-dark)}
+.ghost-btn{background:transparent;border:1.5px solid var(--line);color:var(--text);font-family:'Bebas Neue';font-size:16px;border-radius:14px;padding:14px;width:100%}
+.ghost-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.pill{display:inline-block;font-family:'Bebas Neue';font-size:12px;letter-spacing:.05em;padding:2px 9px;border-radius:20px;background:var(--panel2);color:var(--muted)}
+.pill.live{background:rgba(255,107,107,.15);color:var(--red)}
+.pill.new{background:var(--yellow);color:#111}
+/* matchday */
+.mday{background:linear-gradient(rgba(15,16,16,.78),rgba(15,16,16,.93)),url('assets/landing/worldseries-hero-arena.webp') center/cover;border:1px solid var(--line);border-radius:var(--card-r);padding:20px;text-align:center;margin-bottom:16px}
+.mday .where{font-size:10.5px;letter-spacing:.16em;color:var(--dim);margin-bottom:12px}
+.mday .teams{display:flex;align-items:center;justify-content:center;gap:14px}
+.mday .t{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+.mday .t .cr{width:46px;height:46px}
+.mday .t .cr img,.mday .t .cr svg{width:100%;height:100%;object-fit:contain}
+.mday .t h4{font-size:15px;text-transform:uppercase;line-height:1}
+.mday .sc{font-family:'Bebas Neue';font-size:44px;color:var(--yellow);line-height:1}
+.mday .clock{font-family:'Bebas Neue';font-size:16px;color:var(--red);margin-top:8px}
+.vote-c{background:var(--panel);border:1px solid var(--line);border-radius:var(--card-r);padding:16px;margin-bottom:12px}
+.vote-c h4{font-size:17px;text-transform:uppercase}
+.vote-c .vsub{color:var(--dim);font-size:12px;margin-bottom:11px}
+.vopt{margin-bottom:9px;cursor:pointer}
+.vopt .vt{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.vbar{height:38px;border-radius:11px;background:var(--panel2);position:relative;overflow:hidden;border:1.5px solid transparent}
+.vopt:active .vbar{border-color:var(--yellow)}
+.vbar>span.fill{position:absolute;inset:0;background:rgba(243,255,61,.16);border-radius:11px;transition:width .4s}
+.vbar>span.lab{position:absolute;left:13px;top:0;line-height:38px;font-size:13px}
+.vbar.voted{border-color:var(--yellow)}
+.vbar.voted>span.fill{background:rgba(243,255,61,.28)}
+.member-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--yellow);border:1px solid rgba(243,255,61,.4);border-radius:20px;padding:2px 9px}
+/* membership tiers */
+.tier{background:var(--panel);border:1.5px solid var(--line);border-radius:var(--card-r);padding:18px;margin-bottom:13px;position:relative}
+.tier.feat{border-color:var(--yellow);box-shadow:0 0 34px rgba(243,255,61,.1)}
+.tier .badge-top{position:absolute;top:-10px;left:18px;background:var(--yellow);color:#111;font-family:'Bebas Neue';font-size:12px;padding:2px 11px;border-radius:20px}
+.tier h3{font-size:22px;text-transform:uppercase}
+.tier .price{font-family:'Bebas Neue';font-size:34px;color:var(--yellow);margin:2px 0 4px}
+.tier .price small{font-size:15px;color:var(--dim)}
+.tier ul{list-style:none;margin:12px 0}
+.tier li{padding-left:24px;position:relative;font-size:13.5px;color:var(--muted);margin-bottom:7px}
+.tier li::before{content:'✓';position:absolute;left:2px;color:var(--yellow);font-weight:700}
+/* predictions */
+.fixt{background:var(--panel);border:1px solid var(--line);border-radius:var(--card-r);padding:15px;margin-bottom:12px}
+.fixt .fx-top{display:flex;align-items:center;gap:9px;font-family:'Bebas Neue';font-size:16px}
+.fixt .fx-top .cr{width:28px;height:28px}.fixt .fx-top .cr img,.fixt .fx-top .cr svg{width:100%;height:100%;object-fit:contain}
+.fixt .fx-when{font-size:10.5px;letter-spacing:.12em;color:var(--dim);margin-bottom:8px}
+.picks{display:flex;gap:7px;margin-top:12px}
+.picks button{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:11px 4px;font-size:12.5px;color:var(--muted)}
+.picks button.on{border-color:var(--yellow);color:var(--yellow);background:rgba(243,255,61,.07)}
+.reward-line{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 15px;margin-bottom:12px;font-size:13px;color:var(--muted)}
+.reward-line .big{font-family:'Bebas Neue';font-size:20px;color:var(--yellow)}
+/* account */
+.balance-card{background:linear-gradient(135deg,#1e1f1e,#242524);border:1px solid var(--line);border-radius:var(--card-r);padding:20px;margin-bottom:14px}
+.balance-card .lbl{font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.balance-card .amt{font-family:'Bebas Neue';font-size:40px;color:var(--yellow);line-height:1.1}
+.balance-card .row{display:flex;gap:10px;margin-top:14px}
+.balance-card .row button{flex:1}
+.mini{display:flex;gap:10px;margin-bottom:14px}
+.mini .m{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.mini .m .n{font-family:'Bebas Neue';font-size:24px}
+.mini .m .l{font-size:10.5px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.holding{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.holding:last-child{border:none}
+.holding .cr{width:38px;height:38px;flex:none}.holding .cr img,.holding .cr svg{width:100%;height:100%;object-fit:contain}
+.holding .hv{margin-left:auto;text-align:right}
+.holding .hv .v{font-family:'Bebas Neue';font-size:17px}
+.sect-lbl{font-size:12px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin:20px 2px 10px;font-weight:700}
+.card-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--card-r);padding:16px}
+.decision{padding:14px 0;border-bottom:1px solid var(--line)}
+.decision:last-child{border:none}
+.decision p{font-size:14px;margin-bottom:9px}
+.decision .dbtns{display:flex;gap:8px}
+.decision .dbtns button{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:9px;font-size:13px;color:var(--muted)}
+.decision .dbtns button.yes.on{border-color:var(--green);color:var(--green);background:rgba(78,203,113,.08)}
+.decision .dbtns button.no.on{border-color:var(--red);color:var(--red);background:rgba(255,107,107,.08)}
+.stripe-note{display:flex;align-items:center;gap:7px;justify-content:center;color:var(--dim);font-size:11px;margin-top:14px}
+/* ===== bottom nav ===== */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;z-index:90;background:rgba(15,16,16,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:8px 6px 14px}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--dim);padding:5px 0;letter-spacing:.02em}
+.tabbar button .ic{font-size:19px;line-height:1}
+.tabbar button.on{color:var(--yellow)}
+/* ===== sheet (bottom modal) ===== */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:130;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.open{display:flex}
+.sheet{background:var(--panel);border:1px solid var(--line);border-top-left-radius:24px;border-top-right-radius:24px;width:100%;max-width:500px;padding:12px 20px 30px;animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px)}}
+.sheet .grip{width:40px;height:4px;background:var(--line);border-radius:3px;margin:4px auto 16px}
+.sheet h3{font-size:22px;text-transform:uppercase;margin-bottom:4px}
+.sheet .ssub{color:var(--dim);font-size:13px;margin-bottom:16px}
+.amt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.amt-grid button{border:1.5px solid var(--line);border-radius:12px;padding:14px 0;font-family:'Bebas Neue';font-size:18px;color:var(--text)}
+.amt-grid button.on{border-color:var(--yellow);color:var(--yellow);background:rgba(243,255,61,.07)}
+.pay-row{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin:12px 0;font-size:13.5px}
+.pay-row .card-ic{font-size:18px}
+.pay-row .chg{margin-left:auto;color:var(--yellow);font-size:12px}
+.est{font-size:13px;color:var(--muted);margin:10px 0;text-align:center}
+.est b{color:var(--yellow);font-family:'Bebas Neue';font-size:17px}
+/* toast */
+#toasts{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;width:100%;max-width:460px;padding:0 16px;align-items:center}
+.toast{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.5);width:100%;animation:tin .25s ease}
+.toast.good{border-color:var(--yellow)}
+@keyframes tin{from{transform:translateY(12px);opacity:0}}
+.toast b{color:var(--yellow)}
+.toast .peek{margin-top:6px}
+.foot{padding:26px 20px 20px;text-align:center;color:var(--dim);font-size:10.5px;line-height:1.7}
+@media(max-width:520px){.app{border-left:none;border-right:none}}
+</style>
+</head>
+<body>
+
+<!-- compare switcher -->
+<div class="compare">
+  <a class="on" href="demo-fan.html">👤 <span data-i18n="cmp_fan">Fan · Web 2.5</span></a>
+  <a href="demo.html">⚙️ <span data-i18n="cmp_eng">Engine · Web 3.0</span></a>
+</div>
+
+<div class="app">
+  <!-- appbar -->
+  <header class="appbar">
+    <div class="appbar-row">
+      <div class="brand"><img src="assets/logo.png" alt="ARENA TWO"><span class="fan" data-i18n="fan_tag">FANS</span></div>
+      <div class="spacer"></div>
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()">한국어</button>
+    </div>
+    <div class="sim-note"><span class="sim-dot"></span><span data-i18n="sim">Demo · sample data · this is what a fan sees on their phone</span></div>
+    <div class="peek-toggle" onclick="togglePeek()">
+      <span class="lab"><b data-i18n="peek_t">Behind the scenes</b> — <span data-i18n="peek_s">show the crypto working underneath</span></span>
+      <span class="tg"></span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HOME / BACK A CLUB ============ -->
+    <section class="screen on" id="s-home">
+      <h1 class="h-title" data-i18n="home_t">Back your club</h1>
+      <p class="h-sub" data-i18n="home_s">Support a team and grow with it. Cash out anytime — pay by card, no crypto needed.</p>
+      <div class="peek" data-i18n="peek_home">on-chain reality: each club = 1,000,000 tokens on Base. Your money mints club tokens; "value" is the live order-book price. The fan never sees any of it.</div>
+      <div id="clubList" style="margin-top:14px"></div>
+    </section>
+
+    <!-- ============ MATCHDAY ============ -->
+    <section class="screen" id="s-match">
+      <h1 class="h-title" data-i18n="md_t">Matchday</h1>
+      <p class="h-sub" data-i18n="md_s">You decide what happens next. Members' votes count double.</p>
+      <div class="mday">
+        <div class="where" data-i18n="md_where">WORLD SERIES · SEOUL · KSPO DOME · LIVE</div>
+        <div class="teams">
+          <div class="t"><span class="cr" id="mcA"></span><h4>Dokkaebi FC</h4></div>
+          <div><div class="sc mono"><span id="scA">2</span> : <span id="scB">1</span></div><div class="clock mono"><span id="clk">63</span>'</div></div>
+          <div class="t"><span class="cr" id="mcB"></span><h4>Octa FC</h4></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="member-badge" id="memBadge" style="display:none">★ <span data-i18n="md_member">Member · votes ×1.5</span></span>
+        <span class="pill" data-i18n="md_free">Voting is free for members</span>
+      </div>
+      <div id="voteList"></div>
+      <div class="peek" data-i18n="peek_match">on-chain reality: each vote burns a credit and feeds the $ATWO sink; member weight comes from a staked position. Fan just taps a bar.</div>
+    </section>
+
+    <!-- ============ MEMBERSHIP ============ -->
+    <section class="screen" id="s-member">
+      <h1 class="h-title" data-i18n="mb_t">Become a co-owner</h1>
+      <p class="h-sub" data-i18n="mb_s">Join your club, unlock rewards, and help run it. One payment, by card.</p>
+      <div class="tier feat">
+        <span class="badge-top" data-i18n="mb_pop">MOST POPULAR</span>
+        <h3 data-i18n="mb_co">Co-owner</h3>
+        <div class="price" id="coPrice">₩129,000<small data-i18n="mb_season">/season</small></div>
+        <ul>
+          <li data-i18n="mb_c1">Co-owner pass + name on the members wall</li>
+          <li data-i18n="mb_c2">Votes count ×1.5 on every matchday</li>
+          <li data-i18n="mb_c3">Season reward share + surprise giveaways</li>
+          <li data-i18n="mb_c4">Meet-the-president invites & VIP experiences</li>
+          <li data-i18n="mb_c5">10% off tickets and team store</li>
+        </ul>
+        <button class="back-btn full" onclick="openPay('member')" data-i18n="mb_join">JOIN — PAY BY CARD</button>
+        <div class="peek" data-i18n="peek_member">on-chain reality: a Season-1 membership NFT is minted to a wallet created silently at sign-up. Fan sees a normal $99 checkout.</div>
+      </div>
+      <div class="tier">
+        <h3 data-i18n="mb_founder">Founding supporter</h3>
+        <div class="price" id="foPrice">₩89,000<small> · <span data-i18n="mb_early">early, limited</span></small></div>
+        <ul>
+          <li data-i18n="mb_f1">Everything in Co-owner, at a founding-member price</li>
+          <li data-i18n="mb_f2">Founding badge — only during your club's launch week</li>
+          <li data-i18n="mb_f3">First access to drops and matchday tickets</li>
+        </ul>
+        <button class="ghost-btn" onclick="openPay('founder')" data-i18n="mb_claim">CLAIM FOUNDING SPOT</button>
+      </div>
+      <p style="text-align:center;color:var(--dim);font-size:12px;margin-top:6px" data-i18n="mb_free">Just want to follow along? Being a free fan lets you vote and play too.</p>
+    </section>
+
+    <!-- ============ PREDICT ============ -->
+    <section class="screen" id="s-predict">
+      <h1 class="h-title" data-i18n="pr_t">Predict &amp; win</h1>
+      <p class="h-sub" data-i18n="pr_s">Free to play. Call the results, climb the leaderboard, win real rewards.</p>
+      <div class="reward-line"><span class="big">🏆</span><span data-i18n="pr_reward">This week: win VIP final tickets + fan rewards. No entry fee, ever.</span></div>
+      <div id="fixtList"></div>
+      <div class="sect-lbl" data-i18n="pr_lead">This week's leaderboard</div>
+      <div class="card-box" id="leadBox"></div>
+      <div class="peek" data-i18n="peek_predict">on-chain reality: weekly prizes settle as club tokens; the "fan points" are the off-chain free-point layer that converts to spendable credit.</div>
+    </section>
+
+    <!-- ============ ACCOUNT ============ -->
+    <section class="screen" id="s-account">
+      <h1 class="h-title" data-i18n="ac_t">My account</h1>
+      <p class="h-sub" data-i18n="ac_s">Your support, rewards and money — all in one place.</p>
+      <div class="balance-card">
+        <div class="lbl" data-i18n="ac_bal">Balance</div>
+        <div class="amt mono" id="acBal">₩150,000</div>
+        <div class="row">
+          <button class="back-btn full" style="margin:0" onclick="openPay('topup')" data-i18n="ac_add">ADD MONEY</button>
+          <button class="ghost-btn" onclick="cashOutAll()" data-i18n="ac_cash">CASH OUT</button>
+        </div>
+        <div class="peek" data-i18n="peek_account">on-chain reality: "balance" is a fiat-pegged credit minted against $ATWO; "add money" is a card top-up, "cash out" settles tokens back to card. All on Base, all invisible.</div>
+      </div>
+      <div class="mini">
+        <div class="m"><div class="n mono" id="acPts">8,420</div><div class="l" data-i18n="ac_pts">Fan points</div></div>
+        <div class="m"><div class="n mono" id="acMem">Free fan</div><div class="l" data-i18n="ac_status">Membership</div></div>
+      </div>
+
+      <div class="sect-lbl" data-i18n="ac_backing">My backing</div>
+      <div class="card-box" id="holdBox"></div>
+
+      <div class="sect-lbl" data-i18n="ac_say">Have your say</div>
+      <div class="card-box" id="decisionBox"></div>
+
+      <div class="sect-lbl" data-i18n="ac_pay">Payment</div>
+      <div class="card-box">
+        <div style="display:flex;align-items:center;gap:11px;font-size:14px">
+          <span style="font-size:20px">💳</span>
+          <div><div data-i18n="ac_card">Visa ending 6411</div><div style="color:var(--dim);font-size:12px" data-i18n="ac_default">Default · used for top-ups and memberships</div></div>
+        </div>
+        <div class="stripe-note">🔒 <span data-i18n="ac_stripe">Payments secured by Stripe · Mastercard · Visa</span></div>
+      </div>
+      <div class="foot" data-i18n="foot">Arena Two — fan app concept (Web 2.5 view). Sample data, simulated in your browser. The same on-chain engine as the "Engine · Web 3.0" view runs underneath — fans just never have to see it.</div>
+    </section>
+  </main>
+
+  <!-- bottom nav -->
+  <nav class="tabbar">
+    <button class="on" data-tab="home" onclick="go('home')"><span class="ic">⚽</span><span data-i18n="nav_home">Clubs</span></button>
+    <button data-tab="match" onclick="go('match')"><span class="ic">📣</span><span data-i18n="nav_match">Matchday</span></button>
+    <button data-tab="member" onclick="go('member')"><span class="ic">⭐</span><span data-i18n="nav_member">Join</span></button>
+    <button data-tab="predict" onclick="go('predict')"><span class="ic">🎯</span><span data-i18n="nav_predict">Predict</span></button>
+    <button data-tab="account" onclick="go('account')"><span class="ic">👤</span><span data-i18n="nav_account">Me</span></button>
+  </nav>
+</div>
+
+<!-- pay sheet -->
+<div class="sheet-bg" id="sheet">
+  <div class="sheet">
+    <div class="grip"></div>
+    <h3 id="shTitle">Back Dokkaebi FC</h3>
+    <div class="ssub" id="shSub"></div>
+    <div class="amt-grid" id="amtGrid"></div>
+    <input type="number" id="customAmt" placeholder="" oninput="pickAmt(null,this.value)">
+    <div class="pay-row">
+      <span class="card-ic">💳</span>
+      <span data-i18n="pay_card">Visa ending 6411</span>
+      <span class="chg" data-i18n="pay_change">change</span>
+    </div>
+    <div class="est" id="shEst">—</div>
+    <button class="back-btn full" id="shConfirm" onclick="confirmPay()">CONFIRM</button>
+    <div class="peek" id="shPeek"></div>
+    <button class="ghost-btn" style="margin-top:9px" onclick="closeSheet()" data-i18n="pay_cancel">Cancel</button>
+    <div class="stripe-note">🔒 <span data-i18n="pay_secure">Demo — no real payment. Secured by Stripe.</span></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script src="assets/crests.js"></script>
+<script>
+/* ===================== DATA ===================== */
+const TEAMS = [
+ {id:'EAGL', name:'Eagles FC', city:'Dagestan', pres:'Khabib Nurmagomedov', val:4620, seed:7},
+ {id:'IRON', name:'FC Iron 10', city:'Munich', pres:'Jérôme Boateng', val:1730, seed:13},
+ {id:'OCTA', name:'Octa FC', city:'Manchester', pres:'MVP + Dakota Ditcheva', val:1300, seed:29},
+ {id:'LOVE', name:'Love This Game FC', city:'Paris', pres:'Patrice Evra', val:2840, seed:41},
+ {id:'DKB', name:'Dokkaebi FC', city:'Seoul', pres:'Park Ji-sung + Xiumin', val:6180, seed:53},
+ {id:'SMBA', name:'Atlético Samba', city:'Rio', pres:'Júlio César + Luva', val:2380, seed:67},
+];
+const NAME_KR = {EAGL:'이글스 FC',IRON:'FC 아이언 10',OCTA:'옥타 FC',LOVE:'러브 디스 게임 FC',DKB:'도깨비 FC',SMBA:'아틀레치코 삼바'};
+const CITY_KR = {'Dagestan':'다게스탄','Munich':'뮌헨','Manchester':'맨체스터','Paris':'파리','Seoul':'서울','Rio':'리우'};
+
+const state = {
+  lang: localStorage.getItem('at_lang')||'en',
+  peek: false,
+  krw: 150000, pts: 8420, member: null, // 'co'|'founder'|null
+  backing: { DKB: {put:50000, units: 50000/6180} },
+  votes:{}, picks:{}, decisions:{}, matchMin:63,
+  pay:{kind:null, club:null, amt:0}
+};
+
+/* seeded price history */
+function mb(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+TEAMS.forEach(t=>{ const r=mb(t.seed); let p=t.val*.9; t.hist=[]; for(let i=0;i<24;i++){ p=Math.max(50,p*(1+(r()-.46)*.05)); t.hist.push(p);} t.hist.push(t.val); t.open=t.hist[t.hist.length-9]; });
+
+/* ===================== i18n ===================== */
+const KR = {
+  cmp_fan:'팬 · Web 2.5', cmp_eng:'엔진 · Web 3.0', fan_tag:'팬',
+  sim:'데모 · 예시 데이터 · 팬이 폰에서 보는 화면입니다', peek_t:'뒤에서 보기', peek_s:'밑에서 돌아가는 크립토를 보여줘요',
+  home_t:'구단을 응원하세요', home_s:'팀을 응원하고 함께 성장하세요. 언제든 현금화 · 카드 결제 · 크립토 필요 없음.',
+  peek_home:'온체인 실제: 각 구단 = Base 위 토큰 100만 개. 돈이 구단 토큰을 발행하고, "가치"는 실시간 오더북 가격입니다. 팬은 아무것도 안 봐요.',
+  md_t:'매치데이', md_s:'다음 상황을 당신이 정합니다. 멤버 투표는 2배로 셉니다.',
+  md_where:'월드시리즈 · 서울 · KSPO돔 · 라이브', md_member:'멤버 · 투표 ×1.5', md_free:'멤버는 투표 무료',
+  peek_match:'온체인 실제: 투표마다 크레딧이 소각되고 $ATWO 싱크로 흐릅니다. 멤버 가중치는 스테이킹 포지션에서 나와요. 팬은 그냥 바를 탭.',
+  mb_t:'공동구단주 되기', mb_s:'구단에 합류하고, 혜택을 열고, 함께 운영하세요. 카드로 한 번 결제.',
+  mb_pop:'가장 인기', mb_co:'공동구단주', mb_season:'/시즌',
+  mb_c1:'공동구단주 패스 + 멤버 명단 등재', mb_c2:'모든 매치데이 투표 ×1.5', mb_c3:'시즌 리워드 분배 + 깜짝 선물',
+  mb_c4:'프레지던트 밋업 초대 & VIP 경험', mb_c5:'티켓·팀스토어 10% 할인', mb_join:'가입 — 카드로 결제',
+  peek_member:'온체인 실제: 가입 시 조용히 만들어진 지갑으로 시즌1 멤버십 NFT가 발행됩니다. 팬은 평범한 $99 결제만 봐요.',
+  mb_founder:'파운딩 서포터', mb_early:'초기 · 한정', mb_f1:'공동구단주 혜택 전부를 파운딩 가격에',
+  mb_f2:'파운딩 배지 — 구단 런칭 주간에만', mb_f3:'드롭·매치데이 티켓 우선 접근', mb_claim:'파운딩 자리 확보',
+  mb_free:'그냥 따라만 볼까요? 무료 팬도 투표하고 게임할 수 있어요.',
+  pr_t:'예측하고 획득', pr_s:'무료 플레이. 결과를 맞히고, 리더보드에 오르고, 진짜 리워드를 받으세요.',
+  pr_reward:'이번 주: VIP 결승 티켓 + 팬 리워드. 참가비 영원히 없음.', pr_lead:'이번 주 리더보드',
+  peek_predict:'온체인 실제: 주간 상금은 구단 토큰으로 정산돼요. "팬 포인트"는 크레딧으로 전환되는 오프체인 무료 포인트 층입니다.',
+  ac_t:'내 계정', ac_s:'응원·리워드·돈을 한 곳에서.', ac_bal:'잔액', ac_add:'충전하기', ac_cash:'현금화',
+  peek_account:'온체인 실제: "잔액"은 $ATWO에 페그된 크레딧입니다. "충전"은 카드 탑업, "현금화"는 토큰을 카드로 정산. 전부 Base 위에서, 전부 안 보이게.',
+  ac_pts:'팬 포인트', ac_status:'멤버십', ac_backing:'내 응원', ac_say:'의견 내기', ac_pay:'결제 수단',
+  ac_card:'비자 끝자리 6411', ac_default:'기본 · 충전·멤버십에 사용', ac_stripe:'Stripe · 마스터카드 · 비자로 안전 결제',
+  nav_home:'구단', nav_match:'매치데이', nav_member:'가입', nav_predict:'예측', nav_account:'나',
+  pay_card:'비자 끝자리 6411', pay_change:'변경', pay_cancel:'취소', pay_secure:'데모 — 실제 결제 없음. Stripe 보안.',
+  foot:'Arena Two — 팬앱 컨셉 (Web 2.5 뷰). 예시 데이터, 브라우저 시뮬레이션. "엔진 · Web 3.0" 뷰와 동일한 온체인 엔진이 밑에서 돌지만, 팬은 볼 필요가 없습니다.',
+  back_c:'응원하기', cash_c:'현금화', member_free:'무료 팬', member_co:'공동구단주', member_fo:'파운딩 서포터'
+};
+const EN = {};
+document.querySelectorAll('[data-i18n]').forEach(el=>EN[el.dataset.i18n]=el.innerHTML);
+function t(k, en, kr){ return state.lang==='kr' ? (kr!==undefined?kr:(KR[k]||en)) : (en!==undefined?en:EN[k]); }
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.dataset.i18n; el.innerHTML = (state.lang==='kr'&&KR[k]!==undefined)?KR[k]:EN[k]; });
+  document.body.classList.toggle('kr', state.lang==='kr');
+  document.getElementById('langBtn').textContent = state.lang==='kr'?'EN':'한국어';
+  document.documentElement.lang = state.lang==='kr'?'ko':'en';
+  renderAll();
+}
+function toggleLang(){ state.lang = state.lang==='en'?'kr':'en'; localStorage.setItem('at_lang',state.lang); applyLang(); }
+
+/* ===================== helpers ===================== */
+const $ = id=>document.getElementById(id);
+const fmt = n=>Math.round(n).toLocaleString('en-US');
+function money(krw){ return state.lang==='kr' ? '₩'+fmt(krw) : '$'+fmt(krw/1350); }
+function teamName(t){ return state.lang==='kr' ? (NAME_KR[t.id]||t.name) : t.name; }
+function cityName(c){ return state.lang==='kr' ? (CITY_KR[c]||c) : c; }
+function team(id){ return TEAMS.find(x=>x.id===id); }
+function crestImg(id, px){ return crest(id, px); }
+function toast(html, peek){
+  const d=document.createElement('div'); d.className='toast good';
+  d.innerHTML = html + (peek?`<div class="peek">${peek}</div>`:'');
+  $('toasts').appendChild(d); setTimeout(()=>d.remove(), 4200);
+}
+function togglePeek(){ state.peek=!state.peek; document.body.classList.toggle('peek-on', state.peek); }
+
+/* ===================== nav ===================== */
+function go(tab){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  $('s-'+tab).classList.add('on');
+  document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+  window.scrollTo(0,0);
+}
+
+/* ===================== HOME ===================== */
+function spark(cv, hist, up){
+  const w=cv.width=52, h=cv.height=26, ctx=cv.getContext('2d');
+  const a=hist.slice(-12), mn=Math.min(...a), mx=Math.max(...a);
+  ctx.clearRect(0,0,w,h); ctx.beginPath();
+  a.forEach((v,i)=>{ const x=i/(a.length-1)*w, y=h-3-(v-mn)/(mx-mn||1)*(h-6); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+  ctx.strokeStyle=up?'#4ecb71':'#ff6b6b'; ctx.lineWidth=1.8; ctx.stroke();
+}
+function renderHome(){
+  const wrap=$('clubList'); wrap.innerHTML='';
+  TEAMS.forEach(tm=>{
+    const chg=(tm.val-tm.open)/tm.open*100, up=chg>=0;
+    const el=document.createElement('div'); el.className='club';
+    el.innerHTML=`
+      <span class="cr">${crestImg(tm.id,52)}</span>
+      <div class="info">
+        <h3>${teamName(tm)}</h3>
+        <div class="who">${tm.pres} · ${cityName(tm.city)}</div>
+        <div style="margin-top:8px"><button class="back-btn" onclick="openBack('${tm.id}')">${t('back_c','Back this club','응원하기')}</button></div>
+      </div>
+      <div class="val">
+        <canvas class="spark"></canvas>
+        <div class="v mono">${money(tm.val)}</div>
+        <div class="pct ${up?'up':'dn'} mono">${up?'▲':'▼'}${Math.abs(chg).toFixed(1)}%</div>
+      </div>`;
+    wrap.appendChild(el);
+    spark(el.querySelector('canvas'), tm.hist, up);
+  });
+}
+
+/* ===================== MATCHDAY ===================== */
+const VOTES=[
+ {id:'pp', t:['⚡ Power play — next 5 min','⚡ 파워플레이 — 다음 5분'], opts:[['2× goals for Dokkaebi','도깨비 득점 2배',58],['Bring on an extra player','추가 선수 투입',30],['Keep it as is','그대로',12]]},
+ {id:'kp', t:['🧤 Pull Octa\'s keeper?','🧤 옥타 키퍼 뺄까?'], opts:[['Yes — 60 seconds','네 — 60초',66],['No, keep them','아니오, 유지',34]]},
+ {id:'pm', t:['🎯 Who scores double next?','🎯 다음 2배 득점은?'], opts:[['Xiumin','시우민',44],['Dakota','다코타',35],['Park Ji-sung','박지성',21]]},
+];
+function renderMatch(){
+  $('mcA').innerHTML=crestImg('DKB',46); $('mcB').innerHTML=crestImg('OCTA',46);
+  state.member = state.member; // co-owner => member
+  $('memBadge').style.display = state.member ? 'inline-flex' : 'none';
+  const wrap=$('voteList'); wrap.innerHTML='';
+  VOTES.forEach(v=>{
+    const tot=v.opts.reduce((s,o)=>s+o[2],0), voted=state.votes[v.id];
+    const c=document.createElement('div'); c.className='vote-c';
+    c.innerHTML=`<h4>${v.t[state.lang==='kr'?1:0]}</h4>
+      <div class="vsub">${voted!==undefined ? t('md_voted','You voted · results update live','투표 완료 · 실시간 반영') : t('md_tap','Tap to vote','탭해서 투표')}</div>
+      ${v.opts.map((o,i)=>{ const p=o[2]/tot*100; return `
+        <div class="vopt" onclick="castVote('${v.id}',${i})">
+          <div class="vt"><span>${o[state.lang==='kr'?1:0]||o[0]}</span><span class="mono">${p.toFixed(0)}%</span></div>
+          <div class="vbar ${voted===i?'voted':''}"><span class="fill" style="width:${p}%"></span><span class="lab">${fmt(o[2]*124)} ${t('md_votes','votes','표')}</span></div>
+        </div>`; }).join('')}`;
+    wrap.appendChild(c);
+  });
+}
+function castVote(id,i){
+  if(state.votes[id]!==undefined){ toast(t('md_already','You already voted on this','이미 투표했어요')); return; }
+  const w = state.member?1.5:1;
+  VOTES.find(v=>v.id===id).opts[i][2]+=w;
+  state.votes[id]=i; state.pts+=50;
+  toast(`<b>${t('md_done','Vote counted','투표 완료')}</b> ${state.member?'×1.5 ':''}· +50 ${t('md_fp','fan points','팬 포인트')}`,
+        t('peek_vote','on-chain: 1 credit burned → $ATWO sink · member weight from staked position','on-chain: 크레딧 1 소각 → $ATWO 싱크 · 멤버 가중치는 스테이킹에서'));
+  renderMatch(); renderAccount();
+}
+
+/* ===================== MEMBERSHIP ===================== */
+/* membership is a fixed real-world price ($99 / $69) — shown clean per language, not FX-converted */
+function memStr(plan){ return plan==='co' ? (state.lang==='kr'?'₩129,000':'$99') : (state.lang==='kr'?'₩89,000':'$69'); }
+function renderMember(){
+  $('coPrice').innerHTML = memStr('co')+`<small data-i18n="mb_season">${t('mb_season')}</small>`;
+  $('foPrice').innerHTML = memStr('founder')+`<small> · <span>${t('mb_early')}</span></small>`;
+}
+
+/* ===================== PREDICT ===================== */
+const FIX=[
+ {id:'f1',a:'DKB',b:'OCTA',when:['SEP 26 · SEOUL','9/26 · 서울']},
+ {id:'f2',a:'EAGL',b:'IRON',when:['OCT 3 · KUALA LUMPUR','10/3 · 쿠알라룸푸르']},
+ {id:'f3',a:'LOVE',b:'SMBA',when:['SEP 12 · PARIS','9/12 · 파리']},
+];
+function renderPredict(){
+  const wrap=$('fixtList'); wrap.innerHTML='';
+  FIX.forEach(f=>{
+    const p=state.picks[f.id], ta=team(f.a), tb=team(f.b);
+    const el=document.createElement('div'); el.className='fixt';
+    el.innerHTML=`<div class="fx-when">${f.when[state.lang==='kr'?1:0]}</div>
+      <div class="fx-top"><span class="cr">${crestImg(f.a,28)}</span>${teamName(ta)} <span style="color:var(--dim)">vs</span> <span class="cr">${crestImg(f.b,28)}</span>${teamName(tb)}</div>
+      <div class="picks">
+        <button class="${p==='H'?'on':''}" onclick="pick('${f.id}','H')">${teamName(ta)} ${t('pr_win','win','승')}</button>
+        <button class="${p==='D'?'on':''}" onclick="pick('${f.id}','D')">${t('pr_draw','Draw','무')}</button>
+        <button class="${p==='A'?'on':''}" onclick="pick('${f.id}','A')">${teamName(tb)} ${t('pr_win','win','승')}</button>
+      </div>`;
+    wrap.appendChild(el);
+  });
+  const lead=[['1','seoul_tiger',101],['2','venom_army',97],['3','luva_magic',92],['4',[ 'you','나'],null]];
+  const my = Object.keys(state.picks).length*7+58;
+  $('leadBox').innerHTML = lead.map(r=>{
+    const me=r[2]===null, nm=Array.isArray(r[1])?r[1][state.lang==='kr'?1:0]:r[1];
+    return `<div style="display:flex;padding:9px 0;border-bottom:1px solid var(--line);${me?'color:var(--yellow)':''}"><span class="mono" style="width:26px">${r[0]}</span><span>${me?'★ ':''}${nm}</span><span class="mono" style="margin-left:auto">${me?my:r[2]} ${t('pr_pt','pts','점')}</span></div>`;
+  }).join('');
+}
+function pick(id,s){
+  const fresh = state.picks[id]===undefined;
+  state.picks[id]=s; if(fresh) state.pts+=20;
+  renderPredict(); renderAccount();
+  if(fresh) toast(`<b>${t('pr_locked','Prediction saved','예측 저장')}</b> · +20 ${t('md_fp','fan points','팬 포인트')}`);
+}
+
+/* ===================== ACCOUNT ===================== */
+const DECISIONS=[
+ {id:'d1', q:['Should Dokkaebi FC throw a Seoul fan festival before the match?','도깨비 FC가 경기 전 서울 팬 페스티벌을 열까요?']},
+ {id:'d2', q:['New third kit: neon or classic navy?','서드 킷: 네온 vs 클래식 네이비?'], yes:['Neon','네온'], no:['Navy','네이비']},
+];
+function renderAccount(){
+  $('acBal').textContent = money(state.krw);
+  $('acPts').textContent = fmt(state.pts);
+  $('acMem').textContent = state.member==='co'?t('member_co','Co-owner','공동구단주') : state.member==='founder'?t('member_fo','Founding','파운딩') : t('member_free','Free fan','무료 팬');
+  // backing
+  let total=0; const rows=Object.entries(state.backing).filter(([,b])=>b.units>0.01);
+  $('holdBox').innerHTML = rows.length ? rows.map(([id,b])=>{
+    const tm=team(id), now=b.units*tm.val, pl=(now-b.put)/b.put*100; total+=now;
+    return `<div class="holding"><span class="cr">${crestImg(id,38)}</span>
+      <div><div style="font-family:'Bebas Neue';font-size:16px">${teamName(tm)}</div><div style="color:var(--dim);font-size:12px">${t('ac_put','you put in','넣은 돈')} ${money(b.put)}</div></div>
+      <div class="hv"><div class="v mono">${money(now)}</div><div class="mono ${pl>=0?'up':'dn'}" style="font-size:12px">${pl>=0?'+':''}${pl.toFixed(1)}%</div>
+      <button onclick="cashOut('${id}')" style="color:var(--dim);font-size:11px;margin-top:2px;text-decoration:underline">${t('cash_c','cash out','현금화')}</button></div></div>`;
+  }).join('') + `<div style="display:flex;padding-top:12px;margin-top:4px;border-top:1px solid var(--line);font-size:13px"><span style="color:var(--dim)">${t('ac_total','Total backing value','총 응원 가치')}</span><b class="mono" style="margin-left:auto;color:var(--yellow)">${money(total)}</b></div>`
+   : `<div style="color:var(--dim);font-size:13px;text-align:center;padding:8px 0">${t('ac_none','You have not backed a club yet','아직 응원한 구단이 없어요')}</div>`;
+  // decisions
+  $('decisionBox').innerHTML = DECISIONS.map(d=>{
+    const v=state.decisions[d.id], yes=d.yes?d.yes[state.lang==='kr'?1:0]:t('d_yes','Yes','네'), no=d.no?d.no[state.lang==='kr'?1:0]:t('d_no','No','아니오');
+    return `<div class="decision"><p>${d.q[state.lang==='kr'?1:0]}</p><div class="dbtns">
+      <button class="yes ${v==='y'?'on':''}" onclick="decide('${d.id}','y')">${v==='y'?'✓ ':''}${yes}</button>
+      <button class="no ${v==='n'?'on':''}" onclick="decide('${d.id}','n')">${v==='n'?'✓ ':''}${no}</button></div></div>`;
+  }).join('');
+}
+function decide(id,v){
+  if(state.decisions[id]) return;
+  state.decisions[id]=v; state.pts+=10;
+  toast(`<b>${t('d_thanks','Thanks — your say counts','고마워요 — 의견 반영')}</b>`,
+        t('peek_decide','on-chain: member governance vote recorded (veATWO weight)','on-chain: 멤버 거버넌스 투표 기록 (veATWO 가중치)'));
+  renderAccount();
+}
+function cashOut(id){
+  const b=state.backing[id]; if(!b) return; const tm=team(id); const now=b.units*tm.val;
+  state.krw+=now; delete state.backing[id];
+  toast(`<b>${t('co_done','Cashed out','현금화 완료')}</b> ${money(now)} → ${t('co_card','your card','내 카드')}`,
+        t('peek_cashout','on-chain: club tokens sold on the order book → settled off-ramp to card','on-chain: 오더북에서 구단 토큰 매도 → 카드로 오프램프 정산'));
+  renderAll();
+}
+function cashOutAll(){
+  const ids=Object.keys(state.backing); if(!ids.length){ toast(t('co_nothing','Nothing to cash out yet','현금화할 게 없어요')); return; }
+  let sum=0; ids.forEach(id=>{ const b=state.backing[id]; sum+=b.units*team(id).val; delete state.backing[id]; });
+  state.krw+=sum;
+  toast(`<b>${t('co_done','Cashed out','현금화 완료')}</b> ${money(sum)} → ${t('co_card','your card','내 카드')}`,
+        t('peek_cashout','on-chain: club tokens sold on the order book → settled off-ramp to card','on-chain: 오더북에서 구단 토큰 매도 → 카드로 오프램프 정산'));
+  renderAll();
+}
+
+/* ===================== PAY SHEET ===================== */
+const AMTS=[10000,30000,50000,100000,300000,500000];
+function openBack(id){ state.pay={kind:'back',club:id,amt:50000}; openSheet(); }
+function openPay(kind){
+  if(kind==='member') state.pay={kind:'member',plan:'co',amt:129000};
+  else if(kind==='founder') state.pay={kind:'member',plan:'founder',amt:89000};
+  else state.pay={kind:'topup',amt:50000};
+  openSheet();
+}
+function openSheet(){
+  const p=state.pay;
+  const grid=$('amtGrid'), custom=$('customAmt');
+  if(p.kind==='member'){
+    grid.style.display='none'; custom.style.display='none';
+    $('shTitle').textContent = p.plan==='co'? t('sh_join','Join as Co-owner','공동구단주 가입') : t('sh_founder','Founding supporter','파운딩 서포터');
+    $('shSub').textContent = t('sh_msub','One payment for the full season','시즌 전체 한 번 결제');
+  } else {
+    grid.style.display='grid'; custom.style.display='block';
+    custom.placeholder = t('sh_custom','Other amount','직접 입력');
+    grid.innerHTML = AMTS.map(a=>`<button onclick="pickAmt(${a})" class="${a===p.amt?'on':''}">${money(a)}</button>`).join('');
+    if(p.kind==='back'){ const tm=team(p.club);
+      $('shTitle').textContent = t('sh_back','Back','응원') + ' ' + teamName(tm);
+      $('shSub').textContent = t('sh_bsub','Grows with the club · cash out anytime','구단과 함께 성장 · 언제든 현금화');
+    } else {
+      $('shTitle').textContent = t('sh_top','Add money','충전하기');
+      $('shSub').textContent = t('sh_tsub','Top up your balance by card','카드로 잔액 충전');
+    }
+  }
+  updEst();
+  $('sheet').classList.add('open');
+}
+function pickAmt(a, custom){
+  if(custom!==undefined){ state.pay.amt=Math.max(0,parseInt(custom)||0); }
+  else { state.pay.amt=a; $('customAmt').value=''; }
+  document.querySelectorAll('#amtGrid button').forEach(b=>b.classList.toggle('on', parseInt(b.textContent.replace(/[^0-9]/g,''))=== (state.lang==='kr'?a:Math.round(a/1350)) ));
+  updEst();
+}
+function updEst(){
+  const p=state.pay; const btn=$('shConfirm'); const peek=$('shPeek');
+  if(p.kind==='member'){
+    $('shEst').innerHTML = `<b>${memStr(p.plan)}</b> · ${t('sh_once','one payment','1회 결제')}`;
+    btn.textContent = t('sh_pay','PAY BY CARD','카드로 결제');
+    peek.innerHTML = t('peek_member2','on-chain: Season-1 membership NFT minted to your silent wallet','on-chain: 조용히 만든 지갑으로 시즌1 멤버십 NFT 발행');
+  } else if(p.kind==='back'){
+    $('shEst').innerHTML = `${money(p.amt)} → <b>${teamName(team(p.club))}</b>`;
+    btn.textContent = t('sh_confirm','BACK NOW · PAY BY CARD','지금 응원 · 카드 결제');
+    const units=(p.amt/team(p.club).val).toFixed(0);
+    peek.innerHTML = t('peek_back','on-chain: ','on-chain: ')+money(p.amt)+' → '+units+' $'+p.club+t('peek_back2',' minted on Base · gas covered',' 발행 · Base · 가스 부담');
+  } else {
+    $('shEst').innerHTML = `<b>${money(p.amt)}</b> → ${t('sh_bal','balance','잔액')}`;
+    btn.textContent = t('sh_add','ADD MONEY','충전하기');
+    peek.innerHTML = t('peek_top','on-chain: fiat-pegged credit minted against $ATWO','on-chain: $ATWO에 페그된 크레딧 발행');
+  }
+}
+function closeSheet(){ $('sheet').classList.remove('open'); }
+function confirmPay(){
+  const p=state.pay;
+  if((p.kind!=='member') && p.amt<1000){ toast(t('sh_min','Enter an amount','금액을 입력하세요')); return; }
+  if(p.kind==='member'){
+    state.member = p.plan;
+    toast(`<b>${t('pm_welcome','Welcome, co-owner! 🎉','환영합니다, 공동구단주! 🎉')}</b>`,
+          t('peek_member2','on-chain: Season-1 membership NFT minted to your silent wallet','on-chain: 조용히 만든 지갑으로 시즌1 멤버십 NFT 발행'));
+  } else if(p.kind==='back'){
+    const tm=team(p.club); const units=p.amt/tm.val;
+    const b=state.backing[p.club]||{put:0,units:0}; b.put+=p.amt; b.units+=units; state.backing[p.club]=b;
+    tm.val=Math.round(tm.val*(1+Math.min(.03,p.amt/2000000))); // gentle impact
+    toast(`<b>${t('pm_backed','Backing','응원 시작')} ${teamName(tm)}</b> · ${money(p.amt)}`,
+          t('peek_back3','on-chain: '+Math.round(units)+' $'+p.club+' minted on Base · settled on-chain','on-chain: $'+p.club+' '+Math.round(units)+'개 Base 발행 · 온체인 정산'));
+    go('account');
+  } else {
+    state.krw+=p.amt;
+    toast(`<b>${t('pm_added','Added','충전 완료')}</b> ${money(p.amt)}`,
+          t('peek_top','on-chain: fiat-pegged credit minted against $ATWO','on-chain: $ATWO에 페그된 크레딧 발행'));
+  }
+  closeSheet(); renderAll();
+}
+
+/* ===================== live sim + social proof ===================== */
+setInterval(()=>{
+  TEAMS.forEach(tm=>{ tm.val=Math.max(50, Math.round(tm.val*(1+(Math.random()-.49)*.008))); tm.hist.push(tm.val); if(tm.hist.length>26)tm.hist.shift(); });
+  if($('s-home').classList.contains('on')) renderHome();
+  if($('s-account').classList.contains('on')) renderAccount();
+}, 3200);
+const FANS=['seoul_tiger','venom_army','luva_magic','red_devil_p','eagle_dag'];
+const VERB=[['backed','응원'],['joined','가입'],['cashed out','현금화']];
+setInterval(()=>{
+  if(Math.random()<.5) return;
+  const f=FANS[Math.floor(Math.random()*FANS.length)], tm=TEAMS[Math.floor(Math.random()*TEAMS.length)], v=VERB[Math.floor(Math.random()*VERB.length)];
+  toast(`<span style="color:var(--dim)">${f}</span> ${state.lang==='kr'?v[1]:v[0]} <b>${teamName(tm)}</b>`);
+}, 13000);
+setInterval(()=>{ state.matchMin = state.matchMin<90?state.matchMin+1:63; $('clk').textContent=state.matchMin; }, 22000);
+
+/* ===================== boot ===================== */
+function renderAll(){ renderHome(); renderMatch(); renderMember(); renderPredict(); renderAccount(); }
+applyLang();
+</script>
+</body>
+</html>
