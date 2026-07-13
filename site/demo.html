@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARENA TOWN — Demo | Trade Your Club</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Metrophobic&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#F3FF3D; --yellow-dark:#e6e600; --bg:#0f1010; --bg2:#151616; --panel:#1a1a1a;
+  --panel2:#232424; --line:#333433; --text:#fcfcf7; --muted:#bababa; --dim:#8a8a8a;
+  --red:#ff6b6b; --green:#58C972; --blue:#4a90e2; --teal:#73d2d0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Metrophobic','Noto Sans KR',Arial,sans-serif;font-size:14px;line-height:1.55}
+body.kr{font-family:'Noto Sans KR','Metrophobic',sans-serif}
+h1,h2,h3,h4,.bebas{font-family:'Bebas Neue','Noto Sans KR',Impact,sans-serif;font-weight:400;letter-spacing:.02em}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:9px 12px;font-size:14px;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--yellow)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+.mono{font-variant-numeric:tabular-nums}
+/* ===== header ===== */
+header{position:sticky;top:0;z-index:90;background:rgba(15,16,16,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:18px;padding:12px 20px;max-width:1240px;margin:0 auto}
+.hd .logo{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.hd .logo img{height:22px}
+.hd .logo .town{font-family:'Bebas Neue';font-size:21px;color:var(--yellow);letter-spacing:.08em}
+.hd .atwo{margin-left:auto;display:flex;gap:16px;align-items:center;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.hd .atwo b{color:var(--yellow)}
+.pill{border:1px solid var(--line);border-radius:20px;padding:5px 13px;background:var(--panel);font-size:12px;white-space:nowrap}
+.lang-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:20px;padding:5px 13px;font-size:12px;cursor:pointer}
+.lang-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.back-link{font-size:12px;color:var(--dim)}
+.back-link:hover{color:var(--yellow)}
+/* ticker */
+.ticker{overflow:hidden;border-bottom:1px solid var(--line);background:var(--bg2)}
+.ticker-in{display:flex;gap:44px;white-space:nowrap;padding:7px 0;animation:tk 40s linear infinite;font-size:12px;color:var(--muted)}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-in b{color:var(--text)}
+.up{color:var(--green)} .dn{color:var(--red)} .yl{color:var(--yellow)}
+/* tabs */
+.tabs{display:flex;gap:4px;max-width:1240px;margin:0 auto;padding:10px 20px 0;overflow-x:auto}
+.tab{font-family:'Bebas Neue','Noto Sans KR';font-size:16px;letter-spacing:.05em;padding:10px 20px;border:1px solid transparent;border-bottom:none;color:var(--muted);border-radius:8px 8px 0 0;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--bg);border-color:var(--line);color:var(--yellow);position:relative;top:1px}
+.tab .live-dot{display:inline-block;width:7px;height:7px;background:var(--red);border-radius:50%;margin-left:6px;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+main{padding:26px 0 80px}
+.page{display:none}
+.page.active{display:block}
+/* ===== common ===== */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.sec-h{font-size:26px;text-transform:uppercase;margin-bottom:4px}
+.sec-sub{color:var(--dim);font-size:12.5px;margin-bottom:18px}
+.btn{font-family:'Bebas Neue','Noto Sans KR';font-size:16px;letter-spacing:.05em;border:none;border-radius:6px;padding:11px 22px;background:var(--yellow);color:#111}
+.btn:hover{background:var(--yellow-dark)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.ghost:hover{border-color:var(--yellow);color:var(--yellow)}
+.btn.red{background:var(--red);color:#111}
+.btn.green{background:var(--green);color:#111}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.badge{display:inline-block;font-family:'Bebas Neue';font-size:12px;letter-spacing:.08em;padding:2px 9px;border-radius:3px;color:#111;background:var(--yellow)}
+.crest{width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:13px;color:#111;flex:none}
+.crest-svg,.crest-img{border-radius:0;background:transparent}
+.crest-svg svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
+.crest-img img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
+.grid{display:grid;gap:16px}
+@media(min-width:960px){.g2{grid-template-columns:1fr 1fr}.g31{grid-template-columns:2.1fr 1fr}.g13{grid-template-columns:1fr 2.1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
+table{width:100%;border-collapse:collapse}
+th{font-family:'Bebas Neue';font-size:12.5px;letter-spacing:.1em;color:var(--dim);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;font-weight:400}
+#chart{width:100%;height:300px}
+#pulseChart{width:100%;height:150px}
+td{padding:10px;border-bottom:1px solid #242524;font-size:13px}
+tr:last-child td{border-bottom:none}
+tr.click:hover{background:var(--panel2);cursor:pointer}
+.muted{color:var(--muted)} .dim{color:var(--dim)}
+.right{text-align:right}
+/* toast */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:9px}
+.toast{background:var(--panel2);border:1px solid var(--yellow);border-radius:8px;padding:12px 18px;font-size:13px;max-width:340px;box-shadow:0 8px 30px rgba(0,0,0,.5);animation:tin .25s ease}
+@keyframes tin{from{transform:translateY(14px);opacity:0}}
+.toast b{color:var(--yellow)}
+/* town */
+.mkt-row td{vertical-align:middle}
+.spark{width:110px;height:30px}
+.pct{font-family:'Bebas Neue';font-size:14px}
+/* detail */
+.detail-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.detail-head .crest{width:46px;height:46px;font-size:17px;border-radius:10px}
+.detail-head h2{font-size:30px;text-transform:uppercase;line-height:1}
+.detail-head .price-big{margin-left:auto;text-align:right}
+.detail-head .price-big .p{font-family:'Bebas Neue';font-size:32px}
+.ob-row{display:flex;justify-content:space-between;padding:3px 8px;font-size:12.5px;position:relative;font-variant-numeric:tabular-nums}
+.ob-row .bar{position:absolute;top:0;bottom:0;right:0;opacity:.13}
+.ob-row.ask .bar{background:var(--red)} .ob-row.bid .bar{background:var(--green)}
+.ob-mid{font-family:'Bebas Neue';font-size:19px;text-align:center;padding:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:6px 0}
+.trade-feed{max-height:200px;overflow-y:auto;font-size:12px}
+.trade-feed div{display:flex;justify-content:space-between;padding:3px 8px;color:var(--muted)}
+.side-tabs{display:flex;gap:6px;margin-bottom:12px}
+.side-tabs button{flex:1;font-family:'Bebas Neue';font-size:15px;padding:9px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted)}
+.side-tabs button.buy.on{background:rgba(88,201,114,.15);border-color:var(--green);color:var(--green)}
+.side-tabs button.sell.on{background:rgba(255,107,107,.15);border-color:var(--red);color:var(--red)}
+.fld{margin-bottom:10px}
+.fld label{display:block;font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.form-note{font-size:11.5px;color:var(--dim);margin:8px 0}
+/* presale */
+.rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+@media(max-width:800px){.rounds{grid-template-columns:1fr}}
+.round{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--bg2)}
+.round.on{border-color:var(--yellow);box-shadow:0 0 24px rgba(243,255,61,.1)}
+.round .r-t{font-family:'Bebas Neue';font-size:18px}
+.round .r-p{font-family:'Bebas Neue';font-size:27px;color:var(--yellow);margin:4px 0}
+.prog{height:9px;background:#2b2c2b;border-radius:6px;overflow:hidden;margin-top:10px}
+.prog>div{height:100%;background:var(--yellow);border-radius:6px;transition:width .5s}
+.count{font-family:'Bebas Neue';font-size:30px;color:var(--yellow);letter-spacing:.06em}
+/* matchday */
+.scoreboard{background:linear-gradient(rgba(15,16,16,.82),rgba(15,16,16,.94)),url('assets/landing/worldseries-hero-arena.webp') center/cover;border:1px solid var(--line);border-radius:14px;padding:28px;text-align:center}
+.sb-teams{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap}
+.sb-team{display:flex;align-items:center;gap:12px}
+.sb-team .crest{width:52px;height:52px;font-size:19px;border-radius:12px}
+.sb-team h3{font-size:26px;text-transform:uppercase}
+.sb-score{font-family:'Bebas Neue';font-size:64px;line-height:1;color:var(--yellow)}
+.sb-clock{font-family:'Bebas Neue';font-size:20px;color:var(--red);margin-top:6px}
+.vote-card{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--bg2)}
+.vote-card h4{font-size:18px;text-transform:uppercase;margin-bottom:4px}
+.vote-opt{margin-top:10px}
+.vote-opt .vo-h{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}
+.vbar{height:22px;background:#2b2c2b;border-radius:5px;overflow:hidden;position:relative;cursor:pointer;border:1px solid transparent}
+.vbar:hover{border-color:var(--yellow)}
+.vbar>div{height:100%;background:var(--yellow);opacity:.85;transition:width .4s}
+.vbar span{position:absolute;left:9px;top:0;line-height:22px;font-size:11.5px;color:var(--text);text-shadow:0 1px 2px #000}
+.vbar.voted{border-color:var(--yellow)}
+.feed{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.feed .ev{display:flex;gap:10px;font-size:12.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:10px}
+.feed .ev.gl{border-color:var(--yellow);color:var(--text)}
+.feed .ev .min{font-family:'Bebas Neue';color:var(--yellow);min-width:30px}
+/* staking */
+.tier{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap}
+.tier .t{flex:1;min-width:150px;border:1px solid var(--line);border-radius:9px;padding:12px;text-align:center;font-size:12px;color:var(--dim)}
+.tier .t.on{border-color:var(--yellow);color:var(--text);background:rgba(243,255,61,.05)}
+.tier .t .tn{font-family:'Bebas Neue';font-size:16px;color:var(--text)}
+.stat-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #2c2d2c;font-size:13px}
+.stat-line b{font-family:'Bebas Neue';font-size:15px;color:var(--yellow)}
+/* uponly */
+.fixture{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--bg2)}
+.fx-teams{display:flex;align-items:center;gap:10px;font-family:'Bebas Neue';font-size:17px;flex-wrap:wrap}
+.pick-btns{display:flex;gap:8px;margin-top:12px}
+.pick-btns button{flex:1;padding:8px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12.5px}
+.pick-btns button.on{border-color:var(--yellow);color:var(--yellow);background:rgba(243,255,61,.07)}
+.score-in{display:flex;gap:8px;align-items:center;margin-top:10px}
+.score-in input{width:56px;text-align:center}
+/* governance */
+.prop{border:1px solid var(--line);border-radius:10px;padding:18px;background:var(--bg2);margin-bottom:14px}
+.prop h4{font-size:18px;text-transform:uppercase}
+.prop .meta{font-size:11.5px;color:var(--dim);margin:4px 0 10px}
+.gbar{height:10px;border-radius:6px;overflow:hidden;display:flex;background:#2b2c2b;margin:8px 0}
+.gbar .f{background:var(--green)} .gbar .a{background:var(--red)}
+/* wallet */
+.bal-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:800px){.bal-cards{grid-template-columns:1fr}}
+.bal{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:18px}
+.bal .b-n{font-family:'Bebas Neue';font-size:30px;color:var(--yellow)}
+.bal .b-l{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+.pnl-pos{color:var(--green)} .pnl-neg{color:var(--red)}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px;max-width:440px;width:100%}
+.modal h3{font-size:22px;text-transform:uppercase;margin-bottom:14px}
+.pay-opt{display:flex;gap:10px;margin-bottom:14px}
+.pay-opt button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12.5px}
+.pay-opt button.on{border-color:var(--yellow);color:var(--yellow)}
+footer{border-top:1px solid var(--line);padding:26px 20px;color:var(--dim);font-size:11px;text-align:center;background:var(--bg2)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <a class="logo" href="index.html"><img src="assets/logo.png" alt="ARENA TWO"><span class="town">TOWN</span></a>
+    <span class="pill" data-i18n="hd_demo">INTERACTIVE DEMO · SIMULATED DATA</span>
+    <div class="atwo">
+      <span>$ATWO <b class="mono" id="atwoPx">$0.0500</b> <span class="up mono" id="atwoChg">+4.2%</span></span>
+      <span class="pill" data-i18n="hd_base">BASE · GAS &lt;$0.01</span>
+      <span class="pill"><span data-i18n="hd_credits">Credits</span>: <b class="mono" id="hdCred">—</b> ACR</span>
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()">한국어</button>
+      <a class="back-link" href="index.html" data-i18n="hd_back">← Proposal</a>
+    </div>
+  </div>
+  <div class="ticker"><div class="ticker-in" id="tickerIn"></div></div>
+  <nav class="tabs" id="tabs">
+    <a class="tab active" href="#town" data-i18n="tab_town">TOWN — MARKET</a>
+    <a class="tab" href="#presale" data-i18n="tab_presale">PRESALE</a>
+    <a class="tab" href="#matchday" id="tabMatch"><span data-i18n="tab_match">MATCHDAY</span><span class="live-dot"></span></a>
+    <a class="tab" href="#staking" data-i18n="tab_stake">STAKING</a>
+    <a class="tab" href="#uponly" data-i18n="tab_uponly">UP ONLY</a>
+    <a class="tab" href="#governance" data-i18n="tab_gov">GOVERNANCE</a>
+    <a class="tab" href="#wallet" data-i18n="tab_wallet">MY WALLET</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<!-- ================= TOWN ================= -->
+<section class="page active" id="page-town">
+  <div class="grid g31">
+    <div class="panel">
+      <h2 class="sec-h" data-i18n="town_h">Club Token Market</h2>
+      <div class="sec-sub" data-i18n="town_sub">On-chain order book · quoted in Arena Credits (100 ACR = 1 USDT) · 1% fee → 50% $ATWO burn</div>
+      <table id="mktTable">
+        <thead><tr>
+          <th data-i18n="th_club">Club</th><th class="right" data-i18n="th_price">Price (ACR)</th>
+          <th class="right">24H</th><th data-i18n="th_chart">7D</th>
+          <th class="right" data-i18n="th_vol">Volume 24h</th><th class="right" data-i18n="th_mcap">Market Cap</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <h3 style="font-size:19px;text-transform:uppercase" data-i18n="town_how_h">How it works</h3>
+        <div class="stat-line"><span data-i18n="town_how_1">Each club issues</span><b>1,000,000</b></div>
+        <div class="stat-line"><span data-i18n="town_how_2">Presale allocation</span><b>10%</b></div>
+        <div class="stat-line"><span data-i18n="town_how_3">Trading fee</span><b>1%</b></div>
+        <div class="stat-line"><span data-i18n="town_how_4">Fee → $ATWO buyback &amp; burn</span><b>50%</b></div>
+        <div class="stat-line"><span data-i18n="town_how_5">Fee → club treasury</span><b>25%</b></div>
+        <p class="form-note" style="margin-top:10px" data-i18n="town_how_note">Ported 1:1 from Alt.town's live DNA engine — presale → order book → governance, re-based on $ATWO.</p>
+      </div>
+      <div class="panel">
+        <h3 style="font-size:19px;text-transform:uppercase" data-i18n="town_burn_h">$ATWO burned to date</h3>
+        <div class="count mono" id="burnCount">1,284,502</div>
+        <p class="form-note" data-i18n="town_burn_note">50% of every trading fee buys back and burns $ATWO on Base. Live counter — watch it move as the market trades.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- detail -->
+  <div class="grid g31" style="margin-top:16px" id="detailWrap">
+    <div class="panel">
+      <div class="detail-head" id="dHead"></div>
+      <canvas id="chart" height="300" style="width:100%"></canvas>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <div class="side-tabs">
+          <button class="buy on" id="btnBuy" onclick="setSide('buy')" data-i18n="d_buy">BUY</button>
+          <button class="sell" id="btnSell" onclick="setSide('sell')" data-i18n="d_sell">SELL</button>
+        </div>
+        <div class="fld">
+          <label data-i18n="d_ordertype">Order type</label>
+          <select id="ordType" onchange="renderOrderForm()">
+            <option value="market" data-i18n="d_market">Market order</option>
+            <option value="limit" data-i18n="d_limit">Limit order</option>
+          </select>
+        </div>
+        <div class="fld" id="limitFld" style="display:none">
+          <label data-i18n="d_limitpx">Limit price (ACR)</label>
+          <input type="number" id="limitPx" min="1">
+        </div>
+        <div class="fld">
+          <label data-i18n="d_qty">Quantity</label>
+          <input type="number" id="qty" min="1" placeholder="0">
+        </div>
+        <div class="form-note" id="orderEst">—</div>
+        <button class="btn green" style="width:100%" id="placeBtn" onclick="placeOrder()" data-i18n="d_place_buy">PLACE BUY ORDER</button>
+        <p class="form-note" data-i18n="d_note">Min order 500 ACR · price/time priority matching · gas covered by platform (Alt.town rules).</p>
+      </div>
+      <div class="panel">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="d_ob">Order book</h4>
+        <div id="obAsks"></div>
+        <div class="ob-mid mono" id="obMid">—</div>
+        <div id="obBids"></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel">
+      <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="d_trades">Recent trades</h4>
+      <div class="trade-feed" id="tradeFeed"></div>
+    </div>
+    <div class="panel">
+      <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="d_open">My open orders</h4>
+      <table><thead><tr><th data-i18n="th_market">Market</th><th data-i18n="th_side">Side</th><th class="right" data-i18n="th_price2">Price</th><th class="right" data-i18n="th_qty">Qty</th><th></th></tr></thead>
+      <tbody id="openOrders"><tr><td colspan="5" class="dim" data-i18n="d_noorders">No open orders yet.</td></tr></tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRESALE ================= -->
+<section class="page" id="page-presale">
+  <div class="grid g13">
+    <div class="panel" style="background:linear-gradient(rgba(20,20,18,.55),rgba(15,16,16,.96)),url('assets/landing/team/club-america-2026.webp') center 20%/cover;min-height:340px;display:flex;flex-direction:column;justify-content:flex-end">
+      <span class="badge" style="width:max-content" data-i18n="ps_flag">PRESALE — ROUND 2 LIVE</span>
+      <h2 style="font-size:44px;text-transform:uppercase;line-height:.95;margin-top:10px">Club América</h2>
+      <div class="dim" style="font-size:12.5px">MEXICO CITY · CDMX ARENA · <span data-i18n="ps_matchday">MATCHDAY: AUG 20 2026</span></div>
+    </div>
+    <div class="panel">
+      <h2 class="sec-h">$AME <span data-i18n="ps_h">Token Presale</span></h2>
+      <div class="sec-sub" data-i18n="ps_sub">100,000 $AME (10% of supply) across 3 fixed-price rounds — Alt.town presale engine. 70% of revenue funds the franchise treasury.</div>
+      <div class="rounds">
+        <div class="round">
+          <div class="r-t" data-i18n="ps_r1">ROUND 1 · 48H</div>
+          <div class="r-p">50 ACR <span class="dim" style="font-size:13px" data-i18n="ps_r1d">(-50%)</span></div>
+          <div class="dim" style="font-size:12px">30,000 $AME</div>
+          <div class="prog"><div style="width:100%"></div></div>
+          <div class="form-note" style="color:var(--green)" data-i18n="ps_soldout">SOLD OUT</div>
+        </div>
+        <div class="round on">
+          <div class="r-t"><span data-i18n="ps_r2">ROUND 2 · 48H</span> <span class="badge" data-i18n="ps_live">LIVE</span></div>
+          <div class="r-p">70 ACR <span class="dim" style="font-size:13px" data-i18n="ps_r2d">(-30%)</span></div>
+          <div class="dim" style="font-size:12px">30,000 $AME</div>
+          <div class="prog"><div id="r2prog" style="width:68%"></div></div>
+          <div class="form-note"><span id="r2pct">68</span>% <span data-i18n="ps_filled">filled</span> · <span data-i18n="ps_endsin">ends in</span> <span class="mono" id="r2count">—</span></div>
+        </div>
+        <div class="round">
+          <div class="r-t" data-i18n="ps_r3">ROUND 3 · 72H</div>
+          <div class="r-p">100 ACR <span class="dim" style="font-size:13px" data-i18n="ps_r3d">(base price)</span></div>
+          <div class="dim" style="font-size:12px">40,000 $AME</div>
+          <div class="prog"><div style="width:0%"></div></div>
+          <div class="form-note" data-i18n="ps_upcoming">Opens after Round 2</div>
+        </div>
+      </div>
+      <div class="grid g2">
+        <div>
+          <div class="fld"><label data-i18n="ps_amt">Amount ($AME)</label><input type="number" id="psQty" min="10" placeholder="min 100 ACR ≈ 2 $AME"></div>
+          <div class="form-note" id="psEst">—</div>
+          <button class="btn" style="width:100%" onclick="buyPresale()" data-i18n="ps_buy">BUY $AME AT 70 ACR</button>
+          <p class="form-note" data-i18n="ps_note">Buy-only during presale (no selling) · zero fees · order book opens at kickoff in Mexico City.</p>
+        </div>
+        <div>
+          <div class="stat-line"><span data-i18n="ps_s1">Revenue → franchise treasury</span><b>70%</b></div>
+          <div class="stat-line"><span data-i18n="ps_s2">Revenue → World Series prize pool</span><b>20%</b></div>
+          <div class="stat-line"><span data-i18n="ps_s3">Revenue → platform</span><b>10%</b></div>
+          <div class="stat-line"><span data-i18n="ps_s4">Unsold tokens</span><b data-i18n="ps_s4v">locked 12 months</b></div>
+          <div class="stat-line"><span data-i18n="ps_s5">Raised so far (R1+R2)</span><b class="mono" id="psRaised">2,928,000 ACR</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h3 style="font-size:19px;text-transform:uppercase" data-i18n="ps_sched_h">Launch calendar — a token launch for every host city</h3>
+    <div class="sec-sub" data-i18n="ps_sched_sub">Presale opens the Monday of each matchday week; the order book rings open at kickoff.</div>
+    <table>
+      <thead><tr><th data-i18n="th_date">Date</th><th data-i18n="th_city">City</th><th data-i18n="th_venue">Venue</th><th data-i18n="th_token">Token event</th><th data-i18n="th_status">Status</th></tr></thead>
+      <tbody id="schedBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= MATCHDAY ================= -->
+<section class="page" id="page-matchday">
+  <div class="scoreboard">
+    <div class="dim" style="letter-spacing:.2em;font-size:11px;margin-bottom:14px" data-i18n="md_venue">WORLD SERIES · MATCHDAY 6 · SEOUL · KSPO DOME</div>
+    <div class="sb-teams">
+      <div class="sb-team"><span id="sbCrestA"></span><div style="text-align:left"><h3>Dokkaebi FC</h3><div class="dim" style="font-size:11px">Park Ji-sung + Xiumin</div></div></div>
+      <div class="sb-score mono"><span id="scoreA">2</span> : <span id="scoreB">1</span></div>
+      <div class="sb-team"><div style="text-align:right"><h3>Octa FC</h3><div class="dim" style="font-size:11px">MVP + Dakota Ditcheva</div></div><span id="sbCrestB"></span></div>
+    </div>
+    <div class="sb-clock mono"><span id="clockMin">63</span>' <span data-i18n="md_live">LIVE</span></div>
+    <div class="form-note" style="margin-top:8px" data-i18n="md_powernote">⚡ POWER PLAY window opens at 65' — fan votes decide what happens next.</div>
+  </div>
+
+  <div class="grid g31" style="margin-top:16px">
+    <div>
+      <div class="panel">
+        <h3 style="font-size:20px;text-transform:uppercase" data-i18n="md_vote_h">Live fan votes — powered by your tokens</h3>
+        <div class="sec-sub"><span data-i18n="md_vote_sub">1 vote = 10 ACR or 1 club token · co-owners &amp; stakers vote at 1.5× · voting fees are a $ATWO sink (whitepaper §9)</span> <span class="badge" id="multBadge" style="display:none">×1.5 CO-OWNER</span></div>
+        <div class="grid g3" id="voteCards"></div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:10px" data-i18n="md_feed_h">Match feed</h4>
+        <div class="feed" id="matchFeed"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:6px" data-i18n="md_pulse_h">Fan pulse — $DKB vs $OCTA</h4>
+        <div class="sec-sub" data-i18n="md_pulse_sub">Token prices react to the match in real time.</div>
+        <canvas id="pulseChart" height="150" style="width:100%"></canvas>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:6px">
+          <span style="color:#D0353F">● $DKB <b class="mono" id="pulseDKB">—</b></span>
+          <span style="color:#D9A94A">● $OCTA <b class="mono" id="pulseOCTA">—</b></span>
+        </div>
+      </div>
+      <div class="panel">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:6px" data-i18n="md_my_h">My matchday</h4>
+        <div class="stat-line"><span data-i18n="md_my_votes">Votes cast</span><b class="mono" id="myVotes">0</b></div>
+        <div class="stat-line"><span data-i18n="md_my_spent">Credits spent</span><b class="mono" id="mySpent">0 ACR</b></div>
+        <div class="stat-line"><span data-i18n="md_my_earned">Fan Points earned</span><b class="mono" id="myEarned">0 FP</b></div>
+        <p class="form-note" data-i18n="md_my_note">Every vote earns Fan Points — the free engagement currency (Alt.town "Mile"). Convert them in UP ONLY.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STAKING ================= -->
+<section class="page" id="page-staking">
+  <div class="grid g13">
+    <div class="panel">
+      <h2 class="sec-h" data-i18n="st_h">Stake your club</h2>
+      <div class="sec-sub" data-i18n="st_sub">Whitepaper §10: staking funds the franchise and unlocks co-owner benefits + prize-pool share.</div>
+      <div class="fld"><label data-i18n="st_club">Club token</label><select id="stClub" onchange="renderStake()"></select></div>
+      <div class="fld"><label data-i18n="st_amt">Amount</label><input type="number" id="stAmt" min="1" placeholder="0" oninput="renderStake()"></div>
+      <div class="fld"><label data-i18n="st_dur">Duration</label>
+        <select id="stDur" onchange="renderStake()">
+          <option value="flex" data-i18n="st_flex">Flexible — 6% APR (7-day unlock)</option>
+          <option value="3">3 months — 9% APR</option>
+          <option value="6">6 months — 12% APR</option>
+          <option value="12">12 months — 18% APR</option>
+        </select>
+      </div>
+      <button class="btn" style="width:100%" onclick="stake()" data-i18n="st_btn">STAKE</button>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="tier" id="tierRow"></div>
+        <div class="grid g3">
+          <div><div class="stat-line"><span data-i18n="st_r1">Est. yearly rewards</span><b class="mono" id="stRewards">—</b></div>
+          <div class="stat-line"><span data-i18n="st_r2">Vote multiplier</span><b id="stMult">×1.0</b></div></div>
+          <div><div class="stat-line"><span data-i18n="st_r3">Prize-pool share (club pot)</span><b class="mono" id="stPrize">—</b></div>
+          <div class="stat-line"><span data-i18n="st_r4">ve-governance power</span><b class="mono" id="stVe">—</b></div></div>
+          <div><div class="stat-line"><span data-i18n="st_r5">Total staked ($8M pool)</span><b class="mono" id="stTotal">—</b></div>
+          <div class="stat-line"><span data-i18n="st_r6">First $100 → club treasury</span><b>✓</b></div></div>
+        </div>
+        <p class="form-note" data-i18n="st_note">Example from the $ATWO whitepaper: 50,000 fans staking $300 each = $15M into the system, $5M direct to franchises.</p>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="st_pos_h">My staking positions</h4>
+        <table><thead><tr><th data-i18n="th_club">Club</th><th class="right" data-i18n="th_amount">Amount</th><th data-i18n="th_term">Term</th><th class="right">APR</th><th data-i18n="th_tier">Tier</th><th></th></tr></thead>
+        <tbody id="stPositions"><tr><td colspan="6" class="dim" data-i18n="st_none">No positions yet — stake to become a co-owner.</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= UP ONLY ================= -->
+<section class="page" id="page-uponly">
+  <div class="grid g31">
+    <div>
+      <div class="panel">
+        <h2 class="sec-h">UP ONLY <span style="color:var(--yellow)" data-i18n="up_h">— predict &amp; earn</span></h2>
+        <div class="sec-sub" data-i18n="up_sub">Free to play · +2 correct outcome · +3 exact score · weekly prizes now paid in club tokens (Phase 2 roadmap).</div>
+        <div class="grid g3" id="fixtures"></div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="up_picks_h">My gameweek picks</h4>
+        <table><thead><tr><th data-i18n="th_fixture">Fixture</th><th data-i18n="th_pick">Pick</th><th data-i18n="th_score">Exact score</th><th class="right" data-i18n="th_potential">Potential</th></tr></thead>
+        <tbody id="pickRows"><tr><td colspan="4" class="dim" data-i18n="up_nopicks">No picks yet — predictions lock at kickoff.</td></tr></tbody></table>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:6px" data-i18n="up_fp_h">Fan Points</h4>
+        <div class="bal" style="border:none;padding:0;background:none"><div class="b-n mono" id="fpBal">—</div><div class="b-l">FAN POINTS (FP)</div></div>
+        <div class="fld" style="margin-top:12px"><label data-i18n="up_conv_l">Convert FP → Arena Credits (10,000 FP = 1,000 ACR)</label><input type="number" id="convAmt" step="10000" min="10000" placeholder="10,000"></div>
+        <button class="btn ghost" style="width:100%" onclick="convertFP()" data-i18n="up_conv_btn">CONVERT</button>
+        <p class="form-note" data-i18n="up_conv_note">Fan Points = Alt.town's "Mile": free, earned from engagement, convertible to credits — never sold.</p>
+      </div>
+      <div class="panel">
+        <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="up_lead_h">Gameweek leaderboard</h4>
+        <table><tbody id="leadRows"></tbody></table>
+        <p class="form-note" data-i18n="up_lead_note">Weekly prize: 1,000 $DKB + 1,000 $OCTA · Season champion: VIP Grand Final experience, Singapore.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GOVERNANCE ================= -->
+<section class="page" id="page-governance">
+  <div class="grid g13">
+    <div class="panel">
+      <h2 class="sec-h" data-i18n="gv_h">veATWO Governance</h2>
+      <div class="sec-sub" data-i18n="gv_sub">Stake $ATWO → veATWO 1:1. Vote on platform + per-club decisions (Alt.town governance stack).</div>
+      <div class="bal" style="margin-bottom:12px"><div class="b-n mono">12,500</div><div class="b-l" data-i18n="gv_myve">MY veATWO</div></div>
+      <div class="stat-line"><span data-i18n="gv_s1">Proposal threshold</span><b class="mono">50,000 veATWO</b></div>
+      <div class="stat-line"><span data-i18n="gv_s2">Quorum</span><b>4%</b></div>
+      <div class="stat-line"><span data-i18n="gv_s3">Voting rewards pool</span><b class="mono">120,000 $ATWO / mo</b></div>
+    </div>
+    <div id="propList"></div>
+  </div>
+</section>
+
+<!-- ================= WALLET ================= -->
+<section class="page" id="page-wallet">
+  <div class="bal-cards">
+    <div class="bal"><div class="b-n mono" id="wCred">—</div><div class="b-l" data-i18n="w_cred">ARENA CREDITS (ACR)</div><button class="btn" style="margin-top:12px" onclick="openTopup()" data-i18n="w_topup">TOP UP</button></div>
+    <div class="bal"><div class="b-n mono" id="wAtwo">—</div><div class="b-l">$ATWO</div><div class="form-note" data-i18n="w_atwo_n">Swap to credits anytime — no fee (Alt.town rule: TOWN→KEY free).</div></div>
+    <div class="bal"><div class="b-n mono" id="wFp">—</div><div class="b-l" data-i18n="w_fp">FAN POINTS (FP)</div><div class="form-note" data-i18n="w_fp_n">Earned from votes &amp; predictions. Convert in UP ONLY.</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel">
+      <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="w_hold_h">Club token holdings</h4>
+      <table><thead><tr><th data-i18n="th_token2">Token</th><th class="right" data-i18n="th_qty">Qty</th><th class="right" data-i18n="th_avg">Avg cost</th><th class="right" data-i18n="th_value">Value</th><th class="right">P&amp;L</th></tr></thead>
+      <tbody id="holdRows"></tbody></table>
+      <div class="stat-line" style="margin-top:10px"><span data-i18n="w_total">Portfolio value</span><b class="mono" id="wTotal">—</b></div>
+    </div>
+    <div class="panel">
+      <h4 style="font-size:16px;text-transform:uppercase;margin-bottom:8px" data-i18n="w_tx_h">Transaction history</h4>
+      <div class="trade-feed" id="txRows" style="max-height:300px"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- topup modal -->
+<div class="modal-bg" id="topupModal">
+  <div class="modal">
+    <h3 data-i18n="tu_h">Top up Arena Credits</h3>
+    <div class="pay-opt">
+      <button class="on" id="payCard" onclick="setPay('card')" data-i18n="tu_card">💳 Card (Stripe) — web 2.5</button>
+      <button id="payAtwo" onclick="setPay('atwo')" data-i18n="tu_atwo">◆ Swap $ATWO</button>
+    </div>
+    <div class="fld"><label id="tuLabel" data-i18n="tu_amt_card">Amount (USD) — 1 USD = 100 ACR</label><input type="number" id="tuAmt" min="1" placeholder="50"></div>
+    <div class="form-note" id="tuEst">—</div>
+    <button class="btn" style="width:100%" onclick="doTopup()" data-i18n="tu_btn">CONFIRM TOP-UP</button>
+    <button class="btn ghost" style="width:100%;margin-top:8px" onclick="closeTopup()" data-i18n="tu_cancel">CANCEL</button>
+    <p class="form-note" data-i18n="tu_note">Demo simulation — no real payment. Card rail mirrors the Stripe checkout Arena Two already uses for $99 memberships; credits mint by market-buying $ATWO.</p>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<footer data-i18n="foot">ARENA TOWN — interactive concept demo. All prices, balances and transactions are simulated in your browser. Not an offer of securities or tokens. Arena Two, $ATWO and all team names/likenesses belong to their respective owners; trading engine concept by Alt.town.</footer>
+
+<script src="assets/crests.js"></script>
+<script>
+/* =============== DATA =============== */
+const TEAMS = [
+ {id:'EAGL', name:'Eagles FC', city:'Dagestan', pres:'Khabib Nurmagomedov', color:'#E8B54A', px:342, seed:7},
+ {id:'IRON', name:'FC Iron 10', city:'Munich', pres:'Jérôme Boateng', color:'#C4CDD6', px:128, seed:13},
+ {id:'OCTA', name:'Octa FC', city:'Manchester', pres:'Michael "Venom" Page + Dakota Ditcheva', color:'#D9A94A', px:96, seed:29},
+ {id:'LOVE', name:'Love This Game FC', city:'Paris', pres:'Patrice Evra', color:'#D98A8F', px:210, seed:41},
+ {id:'DKB', name:'Dokkaebi FC', city:'Seoul', pres:'Park Ji-sung + Xiumin', color:'#D0353F', px:458, seed:53},
+ {id:'SMBA', name:'Atlético Samba', city:'Rio de Janeiro', pres:'Júlio César + Luva de Pedreiro', color:'#F2A7C3', px:176, seed:67},
+];
+const PRESALE = {id:'AME', name:'Club América', city:'Mexico City', color:'#F9E547', px:70};
+const CITY_KR = {'Dagestan':'다게스탄','Munich':'뮌헨','Manchester':'맨체스터','Paris':'파리','Seoul':'서울','Rio de Janeiro':'리우데자네이루','Mexico City':'멕시코시티','Lisbon':'리스본','Kuala Lumpur':'쿠알라룸푸르','Singapore':'싱가포르'};
+
+const state = {
+  lang: localStorage.getItem('at_lang')||'en',
+  cred: 25000, atwo: 1200, fp: 8420,
+  holdings: {DKB:{qty:120,avg:380}, OCTA:{qty:300,avg:88}},
+  openOrders: [], txs: [], stakes: [],
+  votes:{count:0,spent:0,earned:0}, votedCards:{}, picks:{}, propVotes:{},
+  burn: 1284502, sel:'DKB', side:'buy', pay:'card',
+  psSold: 20400, psRaised: 2928000, r2end: Date.now()+31*3600*1000,
+  matchMin:63, scoreA:2, scoreB:1, coOwner:false
+};
+
+/* price histories: seeded random walk, 80 candles */
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+TEAMS.forEach(t=>{
+  const rnd = mulberry(t.seed); let p = t.px*(0.72+rnd()*0.2);
+  t.hist=[];
+  for(let i=0;i<80;i++){
+    const drift=(t.px-p)*0.02, vol=p*0.035;
+    const o=p, c=Math.max(5,p+drift+(rnd()-0.48)*vol);
+    t.hist.push({o,c,h:Math.max(o,c)*(1+rnd()*0.012),l:Math.min(o,c)*(1-rnd()*0.012),v:200+rnd()*1800});
+    p=c;
+  }
+  t.px=+t.hist[t.hist.length-1].c.toFixed(1);
+  t.open24=t.hist[t.hist.length-13].c;
+  t.vol24=Math.round(t.hist.slice(-13).reduce((s,k)=>s+k.v,0)*t.px/10)*10;
+});
+
+/* =============== i18n =============== */
+const KR = {
+  hd_demo:"인터랙티브 데모 · 시뮬레이션 데이터", hd_base:"BASE · 가스비 <$0.01", hd_credits:"크레딧", hd_back:"← 제안서",
+  tab_town:"TOWN — 마켓", tab_presale:"프리세일", tab_match:"매치데이", tab_stake:"스테이킹", tab_uponly:"UP ONLY", tab_gov:"거버넌스", tab_wallet:"내 지갑",
+  town_h:"구단 토큰 마켓", town_sub:"온체인 오더북 · 아레나 크레딧 호가 (100 ACR = 1 USDT) · 수수료 1% → 50% $ATWO 소각",
+  th_club:"구단", th_price:"가격 (ACR)", th_chart:"7일", th_vol:"24시간 거래량", th_mcap:"시가총액",
+  town_how_h:"작동 방식", town_how_1:"구단별 발행량", town_how_2:"프리세일 할당", town_how_3:"거래 수수료", town_how_4:"수수료 → $ATWO 바이백&소각", town_how_5:"수수료 → 구단 재정",
+  town_how_note:"Alt.town의 실서비스 DNA 엔진을 1:1 이식 — 프리세일 → 오더북 → 거버넌스를 $ATWO 기반으로 재구성.",
+  town_burn_h:"누적 $ATWO 소각량", town_burn_note:"모든 거래 수수료의 50%가 Base에서 $ATWO를 바이백해 소각합니다. 시장이 거래될 때마다 움직이는 라이브 카운터입니다.",
+  d_buy:"매수", d_sell:"매도", d_ordertype:"주문 유형", d_market:"시장가 주문", d_limit:"지정가 주문", d_limitpx:"지정가 (ACR)", d_qty:"수량",
+  d_place_buy:"매수 주문", d_place_sell:"매도 주문",
+  d_note:"최소 주문 500 ACR · 가격/시간 우선 체결 · 가스비는 플랫폼 부담 (Alt.town 규칙).",
+  d_ob:"오더북", d_trades:"최근 체결", d_open:"내 미체결 주문", d_noorders:"미체결 주문이 없습니다.",
+  th_market:"마켓", th_side:"구분", th_price2:"가격", th_qty:"수량",
+  ps_flag:"프리세일 — 2라운드 진행중", ps_matchday:"매치데이: 2026년 8월 20일", ps_h:"토큰 프리세일",
+  ps_sub:"3회의 고정가 라운드로 100,000 $AME(공급량의 10%) 판매 — Alt.town 프리세일 엔진. 수익의 70%가 프랜차이즈 재정으로.",
+  ps_r1:"1라운드 · 48시간", ps_r1d:"(-50%)", ps_r2:"2라운드 · 48시간", ps_r2d:"(-30%)", ps_r3:"3라운드 · 72시간", ps_r3d:"(정가)",
+  ps_soldout:"매진", ps_live:"LIVE", ps_filled:"판매됨", ps_endsin:"마감까지", ps_upcoming:"2라운드 종료 후 오픈",
+  ps_amt:"수량 ($AME)", ps_buy:"70 ACR에 $AME 매수", ps_note:"프리세일 중에는 매수만 가능 (매도 불가) · 수수료 없음 · 멕시코시티 킥오프와 함께 오더북 개장.",
+  ps_s1:"수익 → 프랜차이즈 재정", ps_s2:"수익 → 월드시리즈 상금 풀", ps_s3:"수익 → 플랫폼", ps_s4:"미판매 물량", ps_s4v:"12개월 락업", ps_s5:"현재까지 모금 (R1+R2)",
+  ps_sched_h:"런칭 캘린더 — 모든 개최 도시가 토큰 런칭", ps_sched_sub:"매치데이 주간 월요일에 프리세일 오픈, 킥오프와 함께 오더북 개장.",
+  th_date:"날짜", th_city:"도시", th_venue:"경기장", th_token:"토큰 이벤트", th_status:"상태",
+  md_venue:"월드시리즈 · 매치데이 6 · 서울 · KSPO돔", md_live:"LIVE",
+  md_powernote:"⚡ 65분에 파워플레이 창이 열립니다 — 다음 상황은 팬 투표가 결정합니다.",
+  md_vote_h:"라이브 팬 투표 — 토큰으로 구동", md_vote_sub:"1표 = 10 ACR 또는 구단 토큰 1개 · 공동구단주&스테이커는 1.5× · 투표 수수료는 $ATWO 싱크 (백서 §9)",
+  md_feed_h:"경기 피드", md_pulse_h:"팬 펄스 — $DKB vs $OCTA", md_pulse_sub:"토큰 가격이 경기에 실시간으로 반응합니다.",
+  md_my_h:"내 매치데이", md_my_votes:"투표 수", md_my_spent:"사용한 크레딧", md_my_earned:"획득한 팬 포인트",
+  md_my_note:"모든 투표는 팬 포인트를 지급합니다 — 무료 참여 화폐 (Alt.town의 'Mile'). UP ONLY에서 전환하세요.",
+  st_h:"구단 스테이킹", st_sub:"백서 §10: 스테이킹은 프랜차이즈에 자금을 공급하고 공동구단주 혜택 + 상금 풀 지분을 잠금 해제합니다.",
+  st_club:"구단 토큰", st_amt:"수량", st_dur:"기간", st_flex:"자유 — 6% APR (7일 언락)", st_btn:"스테이킹",
+  st_r1:"연 예상 보상", st_r2:"투표 배수", st_r3:"상금 풀 지분 (구단 팟)", st_r4:"ve-거버넌스 파워", st_r5:"총 스테이킹 ($8M 풀)", st_r6:"첫 $100 → 구단 재정",
+  st_note:"$ATWO 백서 예시: 팬 5만 명이 각 $300 스테이킹 = 시스템에 $15M, 그중 $5M이 프랜차이즈로 직접.",
+  st_pos_h:"내 스테이킹 포지션", st_none:"아직 포지션이 없습니다 — 스테이킹하고 공동구단주가 되세요.",
+  th_amount:"수량", th_term:"기간", th_tier:"등급",
+  up_h:"— 예측하고 획득", up_sub:"무료 플레이 · 결과 적중 +2 · 스코어 적중 +3 · 주간 상금은 이제 구단 토큰으로 지급 (Phase 2 로드맵).",
+  up_picks_h:"내 게임위크 픽", up_nopicks:"아직 픽이 없습니다 — 예측은 킥오프에 마감됩니다.",
+  th_fixture:"경기", th_pick:"픽", th_score:"스코어", th_potential:"잠재 점수",
+  up_fp_h:"팬 포인트", up_conv_l:"FP → 아레나 크레딧 전환 (10,000 FP = 1,000 ACR)", up_conv_btn:"전환하기",
+  up_conv_note:"팬 포인트 = Alt.town의 'Mile': 무료, 참여로 획득, 크레딧 전환 가능 — 판매되지 않습니다.",
+  up_lead_h:"게임위크 리더보드", up_lead_note:"주간 상금: 1,000 $DKB + 1,000 $OCTA · 시즌 챔피언: 싱가포르 그랜드 파이널 VIP 경험.",
+  gv_h:"veATWO 거버넌스", gv_sub:"$ATWO 스테이킹 → veATWO 1:1. 플랫폼 + 구단별 의사결정에 투표 (Alt.town 거버넌스 스택).",
+  gv_myve:"내 veATWO", gv_s1:"제안 제출 요건", gv_s2:"정족수", gv_s3:"투표 보상 풀",
+  w_cred:"아레나 크레딧 (ACR)", w_topup:"충전", w_atwo_n:"언제든 무료로 크레딧 전환 (Alt.town 규칙: TOWN→KEY 무료).",
+  w_fp:"팬 포인트 (FP)", w_fp_n:"투표·예측으로 획득. UP ONLY에서 전환하세요.",
+  w_hold_h:"구단 토큰 보유", th_token2:"토큰", th_avg:"평균 단가", th_value:"평가액", w_total:"포트폴리오 가치", w_tx_h:"거래 내역",
+  tu_h:"아레나 크레딧 충전", tu_card:"💳 카드 (Stripe) — web 2.5", tu_atwo:"◆ $ATWO 스왑",
+  tu_amt_card:"금액 (USD) — 1 USD = 100 ACR", tu_amt_atwo:"수량 ($ATWO)", tu_btn:"충전 확인", tu_cancel:"취소",
+  tu_note:"데모 시뮬레이션 — 실제 결제 없음. 카드 결제는 Arena Two가 $99 멤버십에 이미 사용하는 Stripe 체크아웃과 동일한 레일이며, 크레딧은 $ATWO 시장가 매수로 발행됩니다.",
+  foot:"ARENA TOWN — 인터랙티브 컨셉 데모. 모든 가격·잔액·거래는 브라우저에서 시뮬레이션됩니다. 증권 또는 토큰의 판매 제안이 아닙니다. Arena Two, $ATWO 및 모든 팀명/초상권은 각 소유자에게 귀속되며, 트레이딩 엔진 컨셉은 Alt.town이 제공합니다."
+};
+const EN = {};
+document.querySelectorAll('[data-i18n]').forEach(el=>EN[el.dataset.i18n]=el.innerHTML);
+function t(key,en,kr){ return state.lang==='kr' ? (kr!==undefined?kr:(KR[key]||en)) : (en!==undefined?en:EN[key]); }
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.dataset.i18n;
+    el.innerHTML = state.lang==='kr' && KR[k]!==undefined ? KR[k] : EN[k];
+  });
+  document.body.classList.toggle('kr', state.lang==='kr');
+  document.getElementById('langBtn').textContent = state.lang==='kr'?'EN':'한국어';
+  document.documentElement.lang = state.lang==='kr'?'ko':'en';
+  renderAll();
+}
+function toggleLang(){ state.lang = state.lang==='en'?'kr':'en'; localStorage.setItem('at_lang',state.lang); applyLang(); }
+
+/* =============== helpers =============== */
+const $ = id=>document.getElementById(id);
+const fmt = n=>Math.round(n).toLocaleString('en-US');
+const fmt1 = n=>(+n).toFixed(1).replace(/\.0$/,'');
+function toast(html){ const d=document.createElement('div'); d.className='toast'; d.innerHTML=html; $('toasts').appendChild(d); setTimeout(()=>d.remove(),4200); }
+function team(id){ return TEAMS.find(x=>x.id===id); }
+function tick(p){ return p<100?1:p<1000?10:p<10000?50:100; }
+function cityName(c){ return state.lang==='kr'?(CITY_KR[c]||c):c; }
+function addTx(txt){ state.txs.unshift({t:new Date().toLocaleTimeString(),txt}); renderWallet(); }
+
+/* =============== routing =============== */
+const PAGES=['town','presale','matchday','staking','uponly','governance','wallet'];
+function route(){
+  let h=(location.hash||'#town').slice(1);
+  if(!PAGES.includes(h)) h='town';
+  PAGES.forEach(p=>{ $('page-'+p).classList.toggle('active',p===h); });
+  document.querySelectorAll('.tab').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+h));
+  if(h==='town') requestAnimationFrame(renderChart);
+  if(h==='matchday') requestAnimationFrame(renderPulse2);
+}
+window.addEventListener('hashchange',route);
+
+/* =============== TOWN =============== */
+function sparkline(cv,hist,color){
+  const ctx=cv.getContext('2d'), w=cv.width=110, h=cv.height=30;
+  const cs=hist.slice(-30).map(k=>k.c), mn=Math.min(...cs), mx=Math.max(...cs);
+  ctx.clearRect(0,0,w,h); ctx.beginPath();
+  cs.forEach((c,i)=>{ const x=i/(cs.length-1)*w, y=h-3-(c-mn)/(mx-mn||1)*(h-6); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+  ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.stroke();
+}
+function renderMarket(){
+  const tb=$('mktTable').querySelector('tbody'); tb.innerHTML='';
+  TEAMS.forEach(tm=>{
+    const chg=(tm.px-tm.open24)/tm.open24*100;
+    const tr=document.createElement('tr'); tr.className='mkt-row click';
+    tr.onclick=()=>{ state.sel=tm.id; renderDetail(); $('detailWrap').scrollIntoView({behavior:'smooth'}); };
+    tr.innerHTML=`<td><div style="display:flex;gap:10px;align-items:center">
+        ${crest(tm.id,36)}
+        <div><b>$${tm.id}</b><div class="dim" style="font-size:11px">${tm.name} · ${cityName(tm.city)}</div></div></div></td>
+      <td class="right mono"><b>${fmt1(tm.px)}</b></td>
+      <td class="right pct ${chg>=0?'up':'dn'} mono">${chg>=0?'+':''}${chg.toFixed(1)}%</td>
+      <td><canvas class="spark"></canvas></td>
+      <td class="right mono">${fmt(tm.vol24)} ACR</td>
+      <td class="right mono">${fmt(tm.px*1000000)} ACR</td>`;
+    tb.appendChild(tr);
+    sparkline(tr.querySelector('canvas'),tm.hist,chg>=0?'#58C972':'#ff6b6b');
+  });
+  // presale row
+  const tr=document.createElement('tr'); tr.className='mkt-row click';
+  tr.onclick=()=>{ location.hash='presale'; };
+  tr.innerHTML=`<td><div style="display:flex;gap:10px;align-items:center">
+      ${crest('AME',36)}
+      <div><b>$AME</b><div class="dim" style="font-size:11px">${PRESALE.name} · ${cityName(PRESALE.city)}</div></div></div></td>
+    <td class="right mono"><b>70</b></td>
+    <td colspan="3"><span class="badge">${t('mk_presale', 'PRESALE R2 LIVE — order book opens Aug 20','프리세일 R2 진행중 — 8/20 오더북 개장')}</span></td>
+    <td class="right mono">—</td>`;
+  tb.appendChild(tr);
+}
+
+/* detail chart */
+function renderChart(){
+  const tm=team(state.sel), cv=$('chart'), ctx=cv.getContext('2d');
+  const W=cv.width=cv.clientWidth*2, H=cv.height=600; // retina
+  ctx.clearRect(0,0,W,H);
+  const hist=tm.hist.slice(-60);
+  const highs=hist.map(k=>k.h), lows=hist.map(k=>k.l);
+  const mx=Math.max(...highs), mn=Math.min(...lows);
+  const padT=20, padB=70, ch=H-padT-padB;
+  const y=v=>padT+ (mx-v)/(mx-mn||1)*ch;
+  // grid
+  ctx.strokeStyle='#242524'; ctx.lineWidth=1; ctx.fillStyle='#8a8a8a'; ctx.font='20px Metrophobic';
+  for(let i=0;i<=4;i++){ const v=mn+(mx-mn)*i/4, yy=y(v);
+    ctx.beginPath(); ctx.moveTo(0,yy); ctx.lineTo(W,yy); ctx.stroke();
+    ctx.fillText(fmt1(v), W-90, yy-6);
+  }
+  const bw=W/hist.length;
+  const maxV=Math.max(...hist.map(k=>k.v));
+  hist.forEach((k,i)=>{
+    const x=i*bw+bw*0.5, up=k.c>=k.o;
+    // volume
+    ctx.fillStyle=up?'rgba(88,201,114,.25)':'rgba(255,107,107,.25)';
+    const vh=k.v/maxV*(padB-14);
+    ctx.fillRect(i*bw+bw*0.18, H-vh-8, bw*0.64, vh);
+    // wick
+    ctx.strokeStyle=up?'#58C972':'#ff6b6b'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x,y(k.h)); ctx.lineTo(x,y(k.l)); ctx.stroke();
+    // body
+    ctx.fillStyle=up?'#58C972':'#ff6b6b';
+    const y1=y(Math.max(k.o,k.c)), y2=y(Math.min(k.o,k.c));
+    ctx.fillRect(i*bw+bw*0.18, y1, bw*0.64, Math.max(3,y2-y1));
+  });
+}
+function renderDetail(){
+  const tm=team(state.sel);
+  const chg=(tm.px-tm.open24)/tm.open24*100;
+  $('dHead').innerHTML=`
+    ${crest(tm.id,52)}
+    <div><h2>$${tm.id} · ${tm.name}</h2>
+    <div class="dim" style="font-size:12px">${tm.pres} · ${cityName(tm.city)} · ${t('d_supply','Supply 1,000,000','발행량 1,000,000')}</div></div>
+    <div class="price-big"><div class="p mono">${fmt1(tm.px)} ACR</div>
+    <div class="pct ${chg>=0?'up':'dn'} mono">${chg>=0?'+':''}${chg.toFixed(2)}% (24h)</div></div>`;
+  renderChart(); renderOB(); renderOrderForm(); renderTrades();
+}
+function renderOB(){
+  const tm=team(state.sel), u=tick(tm.px);
+  let asksHtml='', bidsHtml='';
+  const rnd=mulberry(tm.seed+Math.floor(Date.now()/4000));
+  let maxQ=0; const asks=[],bids=[];
+  for(let i=6;i>=1;i--){ const q=Math.round(30+rnd()*600); maxQ=Math.max(maxQ,q); asks.push({p:tm.px+u*i,q}); }
+  for(let i=1;i<=6;i++){ const q=Math.round(30+rnd()*600); maxQ=Math.max(maxQ,q); bids.push({p:tm.px-u*i,q}); }
+  asks.forEach(a=>{ asksHtml+=`<div class="ob-row ask"><span class="dn mono">${fmt1(a.p)}</span><span class="mono">${fmt(a.q)}</span><div class="bar" style="width:${a.q/maxQ*100}%"></div></div>`; });
+  bids.forEach(b=>{ bidsHtml+=`<div class="ob-row bid"><span class="up mono">${fmt1(b.p)}</span><span class="mono">${fmt(b.q)}</span><div class="bar" style="width:${b.q/maxQ*100}%"></div></div>`; });
+  $('obAsks').innerHTML=asksHtml; $('obBids').innerHTML=bidsHtml;
+  $('obMid').textContent=fmt1(tm.px)+' ACR';
+  state.bestAsk=tm.px+u; state.bestBid=tm.px-u;
+}
+function renderTrades(){
+  const tm=team(state.sel), rnd=mulberry(tm.seed*3+Math.floor(Date.now()/60000));
+  let html=''; let px=tm.px;
+  for(let i=0;i<14;i++){
+    const up=rnd()>0.5; px=px*(1+(rnd()-0.5)*0.004);
+    const mins=Math.floor(rnd()*4)+i;
+    html+=`<div><span class="${up?'up':'dn'} mono">${fmt1(px)}</span><span class="mono">${fmt(10+rnd()*300)}</span><span class="dim">-${mins}m</span></div>`;
+  }
+  $('tradeFeed').innerHTML=html;
+}
+function setSide(s){
+  state.side=s;
+  $('btnBuy').classList.toggle('on',s==='buy');
+  $('btnSell').classList.toggle('on',s==='sell');
+  const pb=$('placeBtn');
+  pb.className='btn '+(s==='buy'?'green':'red');
+  pb.textContent = s==='buy'?t('d_place_buy'):t('d_place_sell', 'PLACE SELL ORDER','매도 주문');
+  renderOrderForm();
+}
+function renderOrderForm(){
+  const tm=team(state.sel), typ=$('ordType').value;
+  $('limitFld').style.display = typ==='limit'?'block':'none';
+  if(typ==='limit' && !$('limitPx').value) $('limitPx').value=Math.round(tm.px);
+  const q=+$('qty').value||0;
+  const px = typ==='limit' ? (+$('limitPx').value||tm.px) : (state.side==='buy'?state.bestAsk:state.bestBid);
+  const gross=q*px, fee=gross*0.01;
+  const own=(state.holdings[tm.id]||{qty:0}).qty;
+  $('orderEst').innerHTML = q?`${t('d_est','Est. total','예상 총액')}: <b class="mono">${fmt(gross)} ACR</b> · ${t('d_fee','fee 1%','수수료 1%')}: <span class="mono">${fmt(fee)} ACR</span> ${state.side==='sell'?`· ${t('d_own','you hold','보유')}: ${fmt(own)}`:''}`:'—';
+}
+$('qty').addEventListener('input',renderOrderForm);
+$('limitPx') && $('limitPx').addEventListener('input',renderOrderForm);
+function placeOrder(){
+  const tm=team(state.sel), typ=$('ordType').value, q=+$('qty').value||0;
+  if(q<=0) return toast(t('e_qty','Enter a quantity.','수량을 입력하세요.'));
+  const px = typ==='limit'?(+$('limitPx').value||tm.px):(state.side==='buy'?state.bestAsk:state.bestBid);
+  const gross=q*px, fee=Math.round(gross*0.01);
+  if(gross<500) return toast(t('e_min','Minimum order is 500 ACR (Alt.town rule).','최소 주문은 500 ACR입니다 (Alt.town 규칙).'));
+  if(state.side==='buy' && state.cred<gross+fee) return toast(t('e_bal','Not enough credits — top up in My Wallet.','크레딧이 부족합니다 — 내 지갑에서 충전하세요.'));
+  const own=(state.holdings[tm.id]||{qty:0}).qty;
+  if(state.side==='sell' && own<q) return toast(t('e_own','Not enough tokens to sell.','매도할 토큰이 부족합니다.'));
+  if(typ==='limit' && ((state.side==='buy'&&px<tm.px-tick(tm.px)*0.5)||(state.side==='sell'&&px>tm.px+tick(tm.px)*0.5))){
+    state.openOrders.push({m:tm.id,side:state.side,px,q});
+    renderOpenOrders();
+    toast(`<b>${t('t_open','ORDER OPEN','주문 접수')}</b> — ${state.side==='buy'?t('w_buy','BUY','매수'):t('w_sell','SELL','매도')} ${fmt(q)} $${tm.id} @ ${fmt1(px)} ACR (${t('t_queue','price/time priority queue','가격/시간 우선순위 대기')})`);
+    return;
+  }
+  // execute
+  if(state.side==='buy'){
+    state.cred-=gross+fee;
+    const h=state.holdings[tm.id]||{qty:0,avg:0};
+    h.avg=(h.avg*h.qty+gross)/(h.qty+q); h.qty+=q; state.holdings[tm.id]=h;
+    tm.px=Math.min(tm.px*1.05, tm.px+tick(tm.px)*Math.min(3,q/200)); // impact
+  } else {
+    state.cred+=gross-fee;
+    state.holdings[tm.id].qty-=q;
+    tm.px=Math.max(tm.px*0.95, tm.px-tick(tm.px)*Math.min(3,q/200));
+  }
+  state.burn+=Math.round(fee*0.5/0.05/100); // 50% fee → burn, atwo at $0.05, 100ACR=1USD
+  addTx(`${state.side==='buy'?'BUY':'SELL'} ${fmt(q)} $${tm.id} @ ${fmt1(px)} ACR (fee ${fmt(fee)})`);
+  toast(`<b>${t('t_filled','FILLED','체결 완료')}</b> — ${state.side==='buy'?t('w_buy','BUY','매수'):t('w_sell','SELL','매도')} ${fmt(q)} $${tm.id} @ ${fmt1(px)} ACR · ${t('t_burn','fee burns $ATWO','수수료가 $ATWO를 소각')} 🔥`);
+  $('qty').value='';
+  renderAll();
+}
+function renderOpenOrders(){
+  const tb=$('openOrders');
+  if(!state.openOrders.length){ tb.innerHTML=`<tr><td colspan="5" class="dim">${t('d_noorders')}</td></tr>`; return; }
+  tb.innerHTML=state.openOrders.map((o,i)=>`<tr>
+    <td><b>$${o.m}</b></td><td class="${o.side==='buy'?'up':'dn'}">${o.side==='buy'?t('w_buy','BUY','매수'):t('w_sell','SELL','매도')}</td>
+    <td class="right mono">${fmt1(o.px)}</td><td class="right mono">${fmt(o.q)}</td>
+    <td class="right"><button class="btn ghost" style="font-size:12px;padding:4px 10px" onclick="cancelOrder(${i})">${t('w_cancel','CANCEL','취소')}</button></td></tr>`).join('');
+}
+function cancelOrder(i){ state.openOrders.splice(i,1); renderOpenOrders(); toast(t('t_cancel','Order cancelled (full cancellation only — Alt.town rule).','주문이 취소되었습니다 (전량 취소만 가능 — Alt.town 규칙).')); }
+
+/* =============== PRESALE =============== */
+const SCHED=[
+ ['AUG 15','Rio de Janeiro','Farmasi Arena','$SMBA',1],
+ ['AUG 20','Mexico City','CDMX Arena','$AME',2],
+ ['SEP 5','Manchester','AO Arena','$OCTA',0],
+ ['SEP 10','Lisbon','MEO Arena','—',0],
+ ['SEP 12','Paris','Accor Arena','$LOVE',0],
+ ['SEP 26','Seoul','KSPO Dome','$DKB',0],
+ ['OCT 3','Kuala Lumpur','Axiata Arena','$EAGL / $IRON',0],
+ ['OCT 9','Singapore','The Kallang · GRAND FINAL','ALL-CLUB FINALE',0]
+];
+function renderSched(){
+  $('schedBody').innerHTML=SCHED.map(r=>{
+    const st = r[4]===1?`<span class="up">${t('sc_done','LISTED — order book live','상장 완료 — 오더북 개장')}</span>`
+      : r[4]===2?`<span class="badge">${t('sc_live','PRESALE LIVE','프리세일 진행중')}</span>`
+      : `<span class="dim">${t('sc_soon','COMING SOON','예정')}</span>`;
+    return `<tr><td class="mono">${r[0]}</td><td>${cityName(r[1])}</td><td class="muted">${r[2]}</td><td><b>${r[3]}</b></td><td>${st}</td></tr>`;
+  }).join('');
+}
+$('psQty') && $('psQty').addEventListener('input',()=>{
+  const q=+$('psQty').value||0;
+  $('psEst').innerHTML=q?`${t('d_est','Est. total','예상 총액')}: <b class="mono">${fmt(q*70)} ACR</b> · ${t('ps_zero','zero presale fees','프리세일 수수료 없음')}`:'—';
+});
+function buyPresale(){
+  const q=+$('psQty').value||0;
+  if(q<=0) return toast(t('e_qty','Enter a quantity.','수량을 입력하세요.'));
+  const cost=q*70;
+  if(cost<100) return toast(t('e_psmin','Minimum presale order is 100 ACR.','프리세일 최소 주문은 100 ACR입니다.'));
+  if(state.cred<cost) return toast(t('e_bal','Not enough credits — top up in My Wallet.','크레딧이 부족합니다 — 내 지갑에서 충전하세요.'));
+  state.cred-=cost;
+  const h=state.holdings.AME||{qty:0,avg:0};
+  h.avg=(h.avg*h.qty+cost)/(h.qty+q); h.qty+=q; state.holdings.AME=h;
+  state.psSold+=q; state.psRaised+=cost;
+  const pct=Math.min(100,(state.psSold/30000*100));
+  $('r2prog').style.width=pct+'%'; $('r2pct').textContent=Math.round(pct);
+  $('psRaised').textContent=fmt(state.psRaised)+' ACR';
+  addTx(`PRESALE BUY ${fmt(q)} $AME @ 70 ACR`);
+  toast(`<b>${t('t_ps','PRESALE ALLOCATION CONFIRMED','프리세일 배정 확정')}</b> — ${fmt(q)} $AME · ${t('t_ps2','70% of your payment settles to the Club América treasury.','결제액의 70%가 클루브 아메리카 재정으로 정산됩니다.')}`);
+  $('psQty').value=''; $('psEst').textContent='—';
+  renderAll();
+}
+function renderCountdown(){
+  const left=Math.max(0,state.r2end-Date.now());
+  const h=Math.floor(left/3600000), m=Math.floor(left%3600000/60000), s=Math.floor(left%60000/1000);
+  $('r2count').textContent=`${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+}
+
+/* =============== MATCHDAY =============== */
+const VOTES=[
+ {id:'pp', t:['⚡ Power play at 65\'','⚡ 65분 파워플레이'], d:['Next 5 minutes: choose the boost','다음 5분간의 부스트를 선택'],
+  opts:[['2× goals for DKB','DKB 득점 2배',58],['+1 extra player','추가 선수 +1',30],['No power play','파워플레이 없음',12]]},
+ {id:'keeper', t:['🧤 Pull Octa\'s keeper?','🧤 Octa 키퍼 아웃?'], d:['Fans can force a keeper-less minute','팬들이 키퍼 없는 1분을 강제할 수 있습니다'],
+  opts:[['Pull the keeper (60s)','키퍼 아웃 (60초)',66],['Keep the keeper','키퍼 유지',34]]},
+ {id:'pm', t:['🎯 Playmaker — goals ×2','🎯 플레이메이커 — 득점 ×2'], d:['Whose goals count double next?','다음 득점 2배는 누구?'],
+  opts:[['Xiumin (DKB #7)','시우민 (DKB #7)',44],['Dakota (OCTA #10)','다코타 (OCTA #10)',35],['Park Ji-sung cameo','박지성 카메오',21]]}
+];
+const FEED_SCRIPT=[
+ [64,'gl',["GOAL! DKB — Xiumin finishes the power-play move. $DKB +2.1% in 30 seconds.","골! DKB — 시우민이 파워플레이를 마무리. 30초 만에 $DKB +2.1%."]],
+ [61,'ev',["Fan vote passed (12,402 votes): Power play window approved.","팬 투표 가결 (12,402표): 파워플레이 창 승인."]],
+ [58,'ev',["OCTA substitution — Dakota Ditcheva ON. Fan-voted.","OCTA 교체 — 다코타 디체바 투입. 팬 투표로 결정."]],
+ [52,'gl',["GOAL! OCTA — MVP from range. $OCTA spikes +3.4%.","골! OCTA — MVP의 중거리슛. $OCTA +3.4% 급등."]],
+ [47,'ev',["Co-owner exclusive: 500 $DKB airdrop unlocked for stakers at KSPO Dome.","공동구단주 전용: KSPO돔 현장 스테이커에게 500 $DKB 에어드랍."]],
+ [41,'gl',["GOAL! DKB — Park Ji-sung assist, roof nearly off in Seoul.","골! DKB — 박지성의 어시스트, 서울이 뒤집혔습니다."]],
+ [38,'ev',["UP ONLY: 68% of players predicted DKB win — leaderboard shifting.","UP ONLY: 플레이어의 68%가 DKB 승리 예측 — 리더보드 변동 중."]]
+];
+function renderVotes(){
+  state.coOwner = state.stakes.some(s=>s.amt>=1000);
+  $('multBadge').style.display=state.coOwner?'inline-block':'none';
+  $('voteCards').innerHTML=VOTES.map(v=>{
+    const total=v.opts.reduce((s,o)=>s+o[2],0);
+    return `<div class="vote-card"><h4>${v.t[state.lang==='kr'?1:0]}</h4>
+      <div class="dim" style="font-size:11.5px">${v.d[state.lang==='kr'?1:0]}</div>
+      ${v.opts.map((o,i)=>`<div class="vote-opt">
+        <div class="vo-h"><span>${o[state.lang==='kr'?1:0]||o[0]}</span><span class="mono">${(o[2]/total*100).toFixed(0)}%</span></div>
+        <div class="vbar ${state.votedCards[v.id]===i?'voted':''}" onclick="castVote('${v.id}',${i})"><div style="width:${o[2]/total*100}%"></div><span>${fmt(o[2]*137)} ${t('w_votes','votes','표')}</span></div>
+      </div>`).join('')}
+      <div class="form-note">${t('md_cost','Tap a bar to vote — 10 ACR','바를 눌러 투표 — 10 ACR')}${state.coOwner?' · <span class="yl">×1.5</span>':''}</div>
+    </div>`;
+  }).join('');
+}
+function castVote(id,i){
+  if(state.votedCards[id]!==undefined) return toast(t('e_voted','Already voted on this decision.','이미 이 결정에 투표했습니다.'));
+  if(state.cred<10) return toast(t('e_bal','Not enough credits — top up in My Wallet.','크레딧이 부족합니다 — 내 지갑에서 충전하세요.'));
+  state.cred-=10;
+  const w=state.coOwner?1.5:1;
+  const v=VOTES.find(x=>x.id===id); v.opts[i][2]+=w;
+  state.votedCards[id]=i;
+  state.votes.count++; state.votes.spent+=10; state.votes.earned+=50;
+  state.fp+=50;
+  addTx(`VOTE ${id.toUpperCase()} — 10 ACR (weight ×${w})`);
+  toast(`<b>${t('t_vote','VOTE CAST','투표 완료')}</b> ${w>1?'×1.5 ':''}— +50 FP · ${t('t_vote2','vote fees flow to the $ATWO sink','투표 수수료는 $ATWO 싱크로 흐릅니다')}`);
+  renderVotes(); renderMyMatch(); renderHeader();
+}
+function renderMyMatch(){
+  $('myVotes').textContent=state.votes.count;
+  $('mySpent').textContent=fmt(state.votes.spent)+' ACR';
+  $('myEarned').textContent=fmt(state.votes.earned)+' FP';
+}
+function renderFeed(){
+  $('matchFeed').innerHTML=FEED_SCRIPT.map(f=>`<div class="ev ${f[1]}"><span class="min mono">${f[0]}'</span><span>${f[2][state.lang==='kr'?1:0]}</span></div>`).join('');
+}
+/* pulse chart */
+const pulse={dkb:[],octa:[]};
+function renderPulse2(){
+  const cv=$('pulseChart'), ctx=cv.getContext('2d');
+  const W=cv.width=cv.clientWidth*2, H=cv.height=300;
+  ctx.clearRect(0,0,W,H);
+  if(pulse.dkb.length<3) return;
+  const a=pulse.dkb.map(v=>v/pulse.dkb[0]-1), b=pulse.octa.map(v=>v/pulse.octa[0]-1);
+  const all=[...a,...b], mn=Math.min(...all), mx=Math.max(...all);
+  ctx.strokeStyle='#2c2d2c'; ctx.beginPath();
+  const y0=H-8-(0-mn)/(mx-mn||1)*(H-16); ctx.moveTo(0,y0); ctx.lineTo(W,y0); ctx.stroke();
+  const draw=(arr,color)=>{ ctx.beginPath();
+    arr.forEach((v,i)=>{ const x=i/(arr.length-1)*W, y=H-8-(v-mn)/(mx-mn||1)*(H-16); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    ctx.strokeStyle=color; ctx.lineWidth=3; ctx.stroke(); };
+  draw(a,'#D0353F'); draw(b,'#D9A94A');
+  $('pulseDKB').textContent=fmt1(team('DKB').px)+' ACR';
+  $('pulseOCTA').textContent=fmt1(team('OCTA').px)+' ACR';
+}
+
+/* =============== STAKING =============== */
+function renderStakeSelect(){
+  const sel=$('stClub');
+  const cur=sel.value||'DKB';
+  sel.innerHTML=TEAMS.map(tm=>`<option value="${tm.id}">$${tm.id} — ${tm.name}</option>`).join('');
+  sel.value=cur;
+}
+const TIERS=[
+ {n:['FAN','팬'],min:0,mult:1},
+ {n:['CO-OWNER','공동구단주'],min:1000,mult:1.5},
+ {n:["PRESIDENT'S CIRCLE","프레지던트 서클"],min:10000,mult:2}
+];
+function renderStake(){
+  const id=$('stClub').value||'DKB', tm=team(id);
+  const amt=+$('stAmt').value||0, dur=$('stDur').value;
+  const apr={flex:0.06,'3':0.09,'6':0.12,'12':0.18}[dur];
+  const tier=TIERS.filter(t=>amt>=t.min).pop();
+  $('tierRow').innerHTML=TIERS.map(t=>`<div class="t ${t===tier&&amt>0?'on':''}">
+    <div class="tn">${t.n[state.lang==='kr'?1:0]}</div>${fmt(t.min)}+ ${t.mult>1?`· ×${t.mult} ${state.lang==='kr'?'투표':'votes'}`:''}</div>`).join('');
+  $('stRewards').textContent=amt?fmt(amt*apr)+` $${id}`:'—';
+  $('stMult').textContent='×'+(amt?tier.mult:1).toFixed(1);
+  $('stPrize').textContent=amt? '$'+fmt(Math.max(1,amt*tm.px/100*0.018)) +' '+t('st_est','est./season','시즌 예상'):'—';
+  $('stVe').textContent=amt?fmt(amt*tier.mult)+' ve':'—';
+  $('stTotal').textContent=fmt(14200000+state.stakes.reduce((s,x)=>s+x.amt*team(x.club).px,0))+' ACR';
+}
+function stake(){
+  const id=$('stClub').value, amt=+$('stAmt').value||0, dur=$('stDur').value;
+  if(amt<=0) return toast(t('e_qty','Enter a quantity.','수량을 입력하세요.'));
+  const h=state.holdings[id]||{qty:0};
+  if(h.qty<amt) return toast(t('e_sthold','You need to hold the tokens first — buy in Town.','먼저 토큰을 보유해야 합니다 — Town에서 매수하세요.'));
+  h.qty-=amt;
+  const apr={flex:0.06,'3':0.09,'6':0.12,'12':0.18}[dur];
+  state.stakes.push({club:id,amt,dur,apr});
+  addTx(`STAKE ${fmt(amt)} $${id} · ${dur==='flex'?'flex':dur+'mo'} @ ${(apr*100)}% APR`);
+  const tier=TIERS.filter(t=>amt>=t.min).pop();
+  toast(`<b>${t('t_staked','STAKED','스테이킹 완료')}</b> — ${fmt(amt)} $${id} · ${t('t_tier','tier','등급')}: ${tier.n[state.lang==='kr'?1:0]}${tier.mult>1?' · '+t('t_multi','matchday votes now ×'+tier.mult,'매치데이 투표 ×'+tier.mult):''}`);
+  $('stAmt').value='';
+  renderAll();
+}
+function unstake(i){
+  const s=state.stakes[i];
+  if(s.dur!=='flex') return toast(t('e_locked','Fixed-term stake — locked until maturity.','고정 기간 스테이킹 — 만기까지 잠깁니다.'));
+  const h=state.holdings[s.club]||{qty:0,avg:0}; h.qty+=s.amt; state.holdings[s.club]=h;
+  state.stakes.splice(i,1);
+  toast(t('t_unstake','Unstake requested — 7-day unlock period applies (Alt.town rule). Tokens returned in demo instantly.','언스테이킹 신청 — 7일 언락 기간이 적용됩니다 (Alt.town 규칙). 데모에서는 즉시 반환됩니다.'));
+  renderAll();
+}
+function renderPositions(){
+  const tb=$('stPositions');
+  if(!state.stakes.length){ tb.innerHTML=`<tr><td colspan="6" class="dim">${t('st_none')}</td></tr>`; return; }
+  tb.innerHTML=state.stakes.map((s,i)=>{
+    const tier=TIERS.filter(t=>s.amt>=t.min).pop();
+    return `<tr><td><span style="display:inline-flex;align-items:center;gap:7px">${crest(s.club,26)}<b>$${s.club}</b></span></td><td class="right mono">${fmt(s.amt)}</td>
+    <td>${s.dur==='flex'?t('w_flex','Flex','자유'):s.dur+t('w_mo','mo','개월')}</td><td class="right mono">${(s.apr*100)}%</td>
+    <td><span class="badge">${tier.n[state.lang==='kr'?1:0]}</span></td>
+    <td class="right"><button class="btn ghost" style="font-size:12px;padding:4px 10px" onclick="unstake(${i})">${t('w_unstake','UNSTAKE','언스테이킹')}</button></td></tr>`;
+  }).join('');
+}
+
+/* =============== UP ONLY =============== */
+const FIX=[
+ {id:'f1', a:'DKB', b:'OCTA', when:['SEP 26 · SEOUL','9/26 · 서울']},
+ {id:'f2', a:'EAGL', b:'IRON', when:['OCT 3 · KUALA LUMPUR','10/3 · 쿠알라룸푸르']},
+ {id:'f3', a:'LOVE', b:'SMBA', when:['SEP 12 · PARIS','9/12 · 파리']}
+];
+function renderFixtures(){
+  $('fixtures').innerHTML=FIX.map(f=>{
+    const p=state.picks[f.id]||{};
+    const ta=team(f.a), tb=team(f.b);
+    return `<div class="fixture">
+      <div class="dim" style="font-size:11px;letter-spacing:.1em">${f.when[state.lang==='kr'?1:0]}</div>
+      <div class="fx-teams" style="margin-top:6px">
+        ${crest(f.a,28)}${ta.name}
+        <span class="dim">vs</span>
+        ${crest(f.b,28)}${tb.name}
+      </div>
+      <div class="pick-btns">
+        <button class="${p.pick==='H'?'on':''}" onclick="pick('${f.id}','H')">${t('w_home','HOME +2','홈 승 +2')}</button>
+        <button class="${p.pick==='D'?'on':''}" onclick="pick('${f.id}','D')">${t('w_draw','DRAW +2','무 +2')}</button>
+        <button class="${p.pick==='A'?'on':''}" onclick="pick('${f.id}','A')">${t('w_away','AWAY +2','원정 승 +2')}</button>
+      </div>
+      <div class="score-in">
+        <span class="dim" style="font-size:11.5px">${t('w_exact','Exact score +3:','스코어 적중 +3:')}</span>
+        <input type="number" min="0" max="20" id="${f.id}a" value="${p.sa??''}" placeholder="-">
+        <span>:</span>
+        <input type="number" min="0" max="20" id="${f.id}b" value="${p.sb??''}" placeholder="-">
+        <button class="btn ghost" style="font-size:12px;padding:6px 12px;margin-left:auto" onclick="lockPick('${f.id}')">${t('w_lock','LOCK','확정')}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function pick(id,side){ state.picks[id]={...(state.picks[id]||{}),pick:side}; renderFixtures(); }
+function lockPick(id){
+  const p=state.picks[id]||{};
+  if(!p.pick) return toast(t('e_pick','Choose an outcome first.','먼저 결과를 선택하세요.'));
+  p.sa=$(id+'a').value; p.sb=$(id+'b').value; p.locked=true; state.picks[id]=p;
+  state.fp+=100;
+  toast(`<b>${t('t_pick','PICK LOCKED','픽 확정')}</b> — +100 FP ${t('t_pick2','for playing. Points settle at full time.','참여 보상. 점수는 경기 종료 후 정산됩니다.')}`);
+  renderPicks(); renderHeader();
+}
+function renderPicks(){
+  const rows=Object.entries(state.picks).filter(([,p])=>p.locked);
+  const tb=$('pickRows');
+  if(!rows.length){ tb.innerHTML=`<tr><td colspan="4" class="dim">${t('up_nopicks')}</td></tr>`; return; }
+  tb.innerHTML=rows.map(([id,p])=>{
+    const f=FIX.find(x=>x.id===id);
+    const lbl=p.pick==='H'?team(f.a).name:p.pick==='A'?team(f.b).name:t('w_drawl','Draw','무승부');
+    const ex=p.sa!==''&&p.sb!==''?`${p.sa} : ${p.sb}`:'—';
+    return `<tr><td>${team(f.a).name} vs ${team(f.b).name}</td><td><b>${lbl}</b></td><td class="mono">${ex}</td><td class="right mono yl">+${ex!=='—'?5:2}</td></tr>`;
+  }).join('');
+}
+const LEAD=[['1','seoul_tiger',101],['2','khabib_era',97],['3','luva_magic',92],['4','manc_venom',88],['5',['you','나'],null]];
+function renderLead(){
+  const myPts=Object.values(state.picks).filter(p=>p.locked).length*5+62;
+  $('leadRows').innerHTML=LEAD.map(r=>{
+    const name=Array.isArray(r[1])?r[1][state.lang==='kr'?1:0]:r[1];
+    const me=r[2]===null;
+    return `<tr style="${me?'color:var(--yellow)':''}"><td class="mono">${r[0]}</td><td>${me?'★ ':''}${name}</td><td class="right mono">${me?myPts:r[2]} pts</td></tr>`;
+  }).join('');
+}
+function convertFP(){
+  const amt=+$('convAmt').value||0;
+  if(amt<10000||amt%10000) return toast(t('e_conv','Convert in blocks of 10,000 FP (Alt.town Mile rule).','10,000 FP 단위로만 전환할 수 있습니다 (Alt.town Mile 규칙).'));
+  if(amt>50000) return toast(t('e_convmax','Daily conversion cap: 50,000 FP.','일일 전환 한도: 50,000 FP.'));
+  if(state.fp<amt) return toast(t('e_fp','Not enough Fan Points.','팬 포인트가 부족합니다.'));
+  state.fp-=amt; state.cred+=amt/10;
+  addTx(`CONVERT ${fmt(amt)} FP → ${fmt(amt/10)} ACR`);
+  toast(`<b>${t('t_conv','CONVERTED','전환 완료')}</b> — ${fmt(amt)} FP → ${fmt(amt/10)} ACR`);
+  renderAll();
+}
+
+/* =============== GOVERNANCE =============== */
+const PROPS=[
+ {id:'p1', t:['ATP-7 · Unlock 2% of $DKB ecosystem supply for the Seoul fan festival','ATP-7 · 서울 팬 페스티벌을 위해 $DKB 에코시스템 물량 2% 언락'],
+  d:['Per-club governance: $DKB holders + veATWO decide ecosystem unlocks (Alt.town DNA governance).','구단별 거버넌스: $DKB 홀더 + veATWO가 에코시스템 언락을 결정 (Alt.town DNA 거버넌스).'],
+  f:2840000, a:410000, end:['Ends in 2d 14h','마감까지 2일 14시간']},
+ {id:'p2', t:['ATP-8 · Cut trading fee to 0.8% for World Series weeks','ATP-8 · 월드시리즈 기간 거래 수수료 0.8%로 인하'],
+  d:['Fee & service parameters are governance-controlled, as in the Alt.town framework.','수수료·서비스 파라미터는 Alt.town 프레임워크처럼 거버넌스로 제어됩니다.'],
+  f:1920000, a:1480000, end:['Ends in 5d 3h','마감까지 5일 3시간']},
+ {id:'p3', t:['ATP-9 · List the first MMA franchise token in Q4 2026','ATP-9 · 2026 4Q 첫 MMA 프랜차이즈 토큰 상장'],
+  d:['New-vertical listings (whitepaper Phase 2) are approved by token holders.','신규 버티컬 상장(백서 Phase 2)은 토큰 홀더가 승인합니다.'],
+  f:3610000, a:220000, end:['Ends in 8d 9h','마감까지 8일 9시간']}
+];
+function renderProps(){
+  $('propList').innerHTML=PROPS.map(p=>{
+    const tot=p.f+p.a, fp=p.f/tot*100;
+    const voted=state.propVotes[p.id];
+    return `<div class="prop">
+      <h4>${p.t[state.lang==='kr'?1:0]}</h4>
+      <div class="meta">${p.d[state.lang==='kr'?1:0]} · ${p.end[state.lang==='kr'?1:0]} · ${t('gv_quorum','quorum met','정족수 충족')} ✓</div>
+      <div class="gbar"><div class="f" style="width:${fp}%"></div><div class="a" style="width:${100-fp}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px" class="mono">
+        <span class="up">FOR ${fmt(p.f)} (${fp.toFixed(1)}%)</span><span class="dn">AGAINST ${fmt(p.a)}</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn green" style="flex:1" ${voted?'disabled':''} onclick="voteProp('${p.id}',1)">${voted==='f'?'✓ ':''}${t('w_for','VOTE FOR','찬성')}</button>
+        <button class="btn red" style="flex:1" ${voted?'disabled':''} onclick="voteProp('${p.id}',0)">${voted==='a'?'✓ ':''}${t('w_against','VOTE AGAINST','반대')}</button>
+      </div></div>`;
+  }).join('');
+}
+function voteProp(id,forVote){
+  const p=PROPS.find(x=>x.id===id);
+  if(state.propVotes[id]) return;
+  if(forVote) p.f+=12500; else p.a+=12500;
+  state.propVotes[id]=forVote?'f':'a';
+  addTx(`GOVERNANCE VOTE ${id.toUpperCase()} — 12,500 veATWO`);
+  toast(`<b>${t('t_gov','VOTE RECORDED','투표 기록 완료')}</b> — 12,500 veATWO · ${t('t_gov2','voting rewards accrue monthly','투표 보상은 매월 적립됩니다')}`);
+  renderProps();
+}
+
+/* =============== WALLET =============== */
+function renderWallet(){
+  $('wCred').textContent=fmt(state.cred); $('wAtwo').textContent=fmt(state.atwo); $('wFp').textContent=fmt(state.fp);
+  $('fpBal') && ($('fpBal').textContent=fmt(state.fp));
+  const rows=Object.entries(state.holdings).filter(([,h])=>h.qty>0);
+  let total=0;
+  $('holdRows').innerHTML=rows.length?rows.map(([id,h])=>{
+    const tm=team(id)||PRESALE, px=team(id)?team(id).px:70;
+    const val=h.qty*px, pnl=(px-h.avg)/h.avg*100; total+=val;
+    return `<tr><td><span style="display:inline-flex;align-items:center;gap:7px">${crest(id,26)} <b>$${id}</b></span>${!team(id)?` <span class="badge">${t('w_ps','PRESALE','프리세일')}</span>`:''}</td>
+      <td class="right mono">${fmt(h.qty)}</td><td class="right mono">${fmt1(h.avg)}</td>
+      <td class="right mono">${fmt(val)} ACR</td>
+      <td class="right mono ${pnl>=0?'pnl-pos':'pnl-neg'}">${pnl>=0?'+':''}${pnl.toFixed(1)}%</td></tr>`;
+  }).join(''):`<tr><td colspan="5" class="dim">${t('w_none','No holdings yet — buy your club in Town.','보유 토큰이 없습니다 — Town에서 구단을 매수하세요.')}</td></tr>`;
+  const staked=state.stakes.reduce((s,x)=>s+x.amt*team(x.club).px,0);
+  $('wTotal').textContent=fmt(total+staked)+' ACR'+(staked?` (${t('w_incstake','incl. staked','스테이킹 포함')})`:'');
+  $('txRows').innerHTML=state.txs.slice(0,30).map(x=>`<div><span>${x.txt}</span><span class="dim">${x.t}</span></div>`).join('')||`<div class="dim">${t('w_notx','Actions you take in the demo appear here.','데모에서의 활동이 여기에 표시됩니다.')}</div>`;
+}
+function openTopup(){ $('topupModal').classList.add('open'); setPay(state.pay); }
+function closeTopup(){ $('topupModal').classList.remove('open'); }
+function setPay(p){
+  state.pay=p;
+  $('payCard').classList.toggle('on',p==='card');
+  $('payAtwo').classList.toggle('on',p==='atwo');
+  $('tuLabel').textContent = p==='card'?t('tu_amt_card'):t('tu_amt_atwo','Amount ($ATWO)','수량 ($ATWO)');
+  updTuEst();
+}
+$('tuAmt').addEventListener('input',updTuEst);
+function updTuEst(){
+  const a=+$('tuAmt').value||0;
+  $('tuEst').innerHTML = !a?'—': state.pay==='card'
+    ? `→ <b class="mono">${fmt(a*100)} ACR</b> · ${t('tu_e1','platform market-buys $ATWO with your USD','플랫폼이 USD로 $ATWO를 시장가 매수합니다')}`
+    : `→ <b class="mono">${fmt(a*5)} ACR</b> · ${t('tu_e2','at $ATWO = $0.05 · no fee','$ATWO = $0.05 기준 · 수수료 없음')}`;
+}
+function doTopup(){
+  const a=+$('tuAmt').value||0;
+  if(a<=0) return toast(t('e_qty','Enter a quantity.','수량을 입력하세요.'));
+  if(state.pay==='card'){ state.cred+=a*100; addTx(`TOP-UP $${a} card → ${fmt(a*100)} ACR (Stripe rail)`); }
+  else{
+    if(state.atwo<a) return toast(t('e_atwo','Not enough $ATWO.','$ATWO가 부족합니다.'));
+    state.atwo-=a; state.cred+=a*5; addTx(`SWAP ${fmt(a)} $ATWO → ${fmt(a*5)} ACR`);
+  }
+  toast(`<b>${t('t_topup','CREDITS MINTED','크레딧 발행 완료')}</b> — ${t('t_topup2','credits are minted against $ATWO; burning them redeems $ATWO back','크레딧은 $ATWO에 대해 발행되며, 소각 시 $ATWO로 상환됩니다')}`);
+  $('tuAmt').value=''; closeTopup(); renderAll();
+}
+
+/* =============== header + ticker =============== */
+function renderHeader(){
+  $('hdCred').textContent=fmt(state.cred);
+  $('burnCount').textContent=fmt(state.burn);
+}
+function renderTicker(){
+  const parts=TEAMS.map(tm=>{
+    const chg=(tm.px-tm.open24)/tm.open24*100;
+    return `<span>$${tm.id} <b class="mono">${fmt1(tm.px)}</b> <span class="${chg>=0?'up':'dn'} mono">${chg>=0?'▲':'▼'}${Math.abs(chg).toFixed(1)}%</span></span>`;
+  });
+  parts.push(`<span class="yl">$AME ${t('mk_ps_short','PRESALE R2 — 70 ACR','프리세일 R2 — 70 ACR')}</span>`);
+  parts.push(`<span>🔥 ${t('tk_burn','ATWO BURNED','ATWO 소각')}: <b class="mono">${fmt(state.burn)}</b></span>`);
+  parts.push(`<span>🏟️ ${t('tk_next','NEXT: SEOUL · KSPO DOME · SEP 26','다음 경기: 서울 · KSPO돔 · 9/26')}</span>`);
+  const html=parts.join('<span class="dim">·</span>');
+  $('tickerIn').innerHTML=html+'<span class="dim">·</span>'+html;
+}
+
+/* =============== live sim =============== */
+setInterval(()=>{
+  TEAMS.forEach(tm=>{
+    const drift=(tm.hist[79].c-tm.px)*0.001;
+    tm.px=Math.max(5,+(tm.px*(1+(Math.random()-0.492)*0.006)+drift).toFixed(1));
+  });
+  pulse.dkb.push(team('DKB').px); pulse.octa.push(team('OCTA').px);
+  if(pulse.dkb.length>60){pulse.dkb.shift();pulse.octa.shift();}
+  state.burn+=Math.floor(Math.random()*220);
+  renderTicker(); renderHeader();
+  const active=(location.hash||'#town').slice(1);
+  if(active==='town'){ renderMarket(); renderOB(); const tm=team(state.sel);
+    const chg=(tm.px-tm.open24)/tm.open24*100;
+    const pb=$('dHead').querySelector('.price-big'); if(pb) pb.innerHTML=`<div class="p mono">${fmt1(tm.px)} ACR</div><div class="pct ${chg>=0?'up':'dn'} mono">${chg>=0?'+':''}${chg.toFixed(2)}% (24h)</div>`;
+  }
+  if(active==='matchday') renderPulse2();
+},2500);
+setInterval(renderCountdown,1000);
+/* match clock */
+setInterval(()=>{ state.matchMin=state.matchMin<90?state.matchMin+1:63; $('clockMin').textContent=state.matchMin; },20000);
+/* random fan activity toasts */
+const FANS=['seoul_tiger','venom_army','luva_magic','red_devil_p','eagle_dag','iron_muc'];
+setInterval(()=>{
+  if(Math.random()<0.5) return;
+  const tm=TEAMS[Math.floor(Math.random()*TEAMS.length)];
+  const f=FANS[Math.floor(Math.random()*FANS.length)];
+  const q=Math.round(20+Math.random()*400);
+  toast(`<span class="dim">${f}</span> ${Math.random()>0.4?t('t_fanbuy','bought','매수'):t('t_fansell','sold','매도')} <b>${fmt(q)} $${tm.id}</b>`);
+},14000);
+
+/* =============== boot =============== */
+function renderAll(){
+  renderHeader(); renderTicker(); renderMarket(); renderDetail(); renderOpenOrders();
+  renderSched(); renderVotes(); renderFeed(); renderMyMatch(); renderPulse2();
+  renderStakeSelect(); renderStake(); renderPositions();
+  renderFixtures(); renderPicks(); renderLead(); renderProps(); renderWallet();
+  setSide(state.side);
+}
+$('sbCrestA').outerHTML = crest('DKB', 56);
+$('sbCrestB').outerHTML = crest('OCTA', 56);
+applyLang();
+route();
+window.addEventListener('resize',()=>{ renderChart(); renderPulse2(); });
+</script>
+</body>
+</html>

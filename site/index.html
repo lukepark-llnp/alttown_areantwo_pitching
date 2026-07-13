@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARENA TOWN — The Fan Token Exchange, Powered by $ATWO</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Metrophobic&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#F3FF3D; --yellow-dark:#e6e600; --bg:#151616; --bg2:#0f1010; --panel:#1a1a1a;
+  --panel2:#232424; --line:#3a3a3a; --text:#fcfcf7; --muted:#bababa; --dim:#909090;
+  --red:#ff6b6b; --blue:#4a90e2; --teal:#73d2d0; --green:#58C972;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Metrophobic','Noto Sans KR',Arial,sans-serif;line-height:1.6;overflow-x:hidden}
+body.kr{font-family:'Noto Sans KR','Metrophobic',sans-serif}
+h1,h2,h3,.bebas{font-family:'Bebas Neue','Noto Sans KR',Impact,sans-serif;font-weight:400;letter-spacing:.02em}
+img{max-width:100%}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+/* ============ NAV ============ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,16,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{height:26px}
+.nav-logo .x{color:var(--dim);font-size:14px}
+.nav-logo .alttown{font-family:'Bebas Neue';font-size:22px;color:var(--yellow);letter-spacing:.06em}
+.nav-links{display:flex;gap:22px;margin-left:auto;font-size:13.5px;color:var(--muted)}
+.nav-links a:hover{color:var(--yellow)}
+.lang-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.lang-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.demo-btn{background:var(--yellow);color:#111;font-family:'Bebas Neue';font-size:16px;letter-spacing:.05em;padding:8px 20px;border-radius:4px;white-space:nowrap}
+.demo-btn:hover{background:var(--yellow-dark)}
+@media(max-width:900px){.nav-links{display:none}}
+/* ============ HERO ============ */
+.hero{position:relative;min-height:96vh;display:flex;align-items:center;padding-top:90px;
+  background:linear-gradient(rgba(15,16,16,.72),rgba(21,22,22,.94) 78%,var(--bg)),url('assets/landing/worldseries-hero-bg.webp') center/cover}
+.hero-tag{display:inline-block;border:1px solid var(--yellow);color:var(--yellow);font-size:12px;letter-spacing:.22em;padding:6px 14px;border-radius:2px;margin-bottom:22px}
+.hero h1{font-size:clamp(52px,8.2vw,110px);line-height:.95;text-transform:uppercase}
+body.kr .hero h1{font-size:clamp(38px,6vw,80px);line-height:1.12;font-weight:700}
+body.kr .sec-title{line-height:1.18}
+body.kr .quote-strip blockquote{line-height:1.3}
+.hero h1 .yl{color:var(--yellow)}
+.hero p.sub{max-width:640px;color:var(--muted);font-size:17px;margin:26px 0 34px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.cta{font-family:'Bebas Neue';font-size:19px;letter-spacing:.06em;padding:14px 34px;border-radius:4px;display:inline-block}
+.cta.primary{background:var(--yellow);color:#111}
+.cta.primary:hover{background:var(--yellow-dark)}
+.cta.ghost{border:1px solid var(--line);color:var(--text)}
+.cta.ghost:hover{border-color:var(--yellow);color:var(--yellow)}
+.hero-stats{display:flex;gap:44px;margin-top:56px;flex-wrap:wrap}
+.hstat .n{font-family:'Bebas Neue';font-size:40px;color:var(--yellow)}
+.hstat .l{font-size:12.5px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+/* ============ SECTIONS ============ */
+section{padding:96px 0}
+.sec-kicker{color:var(--yellow);font-size:12.5px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:14px}
+.sec-title{font-size:clamp(34px,4.6vw,58px);text-transform:uppercase;line-height:1.02;margin-bottom:18px}
+.sec-lead{color:var(--muted);max-width:760px;font-size:16.5px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:44px}
+@media(max-width:900px){.grid3,.grid2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:26px}
+.card h3{font-size:24px;text-transform:uppercase;margin-bottom:10px;color:var(--text)}
+.card p{color:var(--muted);font-size:14.5px}
+.card .num{font-family:'Bebas Neue';font-size:15px;color:var(--yellow);letter-spacing:.14em;margin-bottom:12px;display:block}
+.card.yl{border-color:rgba(243,255,61,.4)}
+/* problem strip */
+.quote-strip{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:52px 0}
+.quote-strip blockquote{font-family:'Bebas Neue';font-size:clamp(24px,3.4vw,40px);line-height:1.15;text-transform:uppercase;max-width:980px}
+.quote-strip blockquote .yl{color:var(--yellow)}
+.quote-strip cite{display:block;margin-top:16px;color:var(--dim);font-size:13px;font-style:normal;font-family:'Metrophobic','Noto Sans KR'}
+/* alt.town proof */
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+@media(max-width:900px){.proof{grid-template-columns:repeat(2,1fr)}}
+.proof .p{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center}
+.proof .p .n{font-family:'Bebas Neue';font-size:30px;color:var(--yellow)}
+.proof .p .l{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+/* model / flow */
+.flow{margin-top:48px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px;overflow-x:auto}
+.flow-row{display:flex;align-items:stretch;gap:0;min-width:760px}
+.fnode{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:20px 16px;text-align:center;position:relative}
+.fnode .t{font-family:'Bebas Neue';font-size:21px;letter-spacing:.05em}
+.fnode .d{font-size:12.5px;color:var(--muted);margin-top:6px}
+.fnode.hl{border-color:var(--yellow);box-shadow:0 0 24px rgba(243,255,61,.12)}
+.fnode.hl .t{color:var(--yellow)}
+.farrow{display:flex;align-items:center;padding:0 12px;color:var(--yellow);font-family:'Bebas Neue';font-size:15px;flex-direction:column;justify-content:center;gap:2px}
+.farrow span{font-size:11px;color:var(--dim);font-family:'Metrophobic','Noto Sans KR';letter-spacing:0}
+.alloc{margin-top:44px}
+.alloc-bar{display:flex;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.alloc-bar div{display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:17px;color:#111}
+.alloc-legend{display:flex;gap:26px;margin-top:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.alloc-legend b{color:var(--text)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:baseline}
+/* teams */
+.teams-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+@media(max-width:1000px){.teams-grid{grid-template-columns:repeat(2,1fr)}}
+.tcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.2s;position:relative}
+.tcard:hover{border-color:var(--yellow);transform:translateY(-4px)}
+.tcard .ph{height:230px;background-size:cover;background-position:center top;filter:grayscale(18%);position:relative}
+.tcard .ph::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(21,22,22,0) 40%,var(--panel))}
+.tcard .body{padding:16px 18px 20px}
+.tcard .tik{font-family:'Bebas Neue';font-size:15px;letter-spacing:.1em;padding:2px 9px;border-radius:3px;color:#111;display:inline-block;margin-bottom:8px}
+.tcard h3{font-size:23px;text-transform:uppercase;line-height:1.05}
+.tcard .pres{color:var(--muted);font-size:12.5px;margin-top:5px}
+.tcard .city{color:var(--dim);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.tcard .presale-flag{position:absolute;top:12px;right:12px;background:var(--yellow);color:#111;font-family:'Bebas Neue';font-size:12.5px;letter-spacing:.08em;padding:3px 10px;border-radius:3px;z-index:2}
+.tcard .crest-float{position:absolute;top:172px;right:14px;width:62px;height:62px;z-index:3}
+.tcard .crest-float svg,.tcard .crest-float img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.65))}
+.flow-crests{display:flex;justify-content:center;gap:5px;margin-top:9px}
+.flow-crests span{width:24px;height:24px;display:inline-block}
+.flow-crests svg,.flow-crests img{width:100%;height:100%;object-fit:contain}
+/* econ table */
+.econ{margin-top:44px;overflow-x:auto}
+table.tbl{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:680px}
+.tbl th{font-family:'Bebas Neue';font-size:15.5px;letter-spacing:.08em;text-align:left;color:var(--yellow);background:var(--panel2);padding:14px 18px;border-bottom:1px solid var(--line);text-transform:uppercase}
+.tbl td{padding:13px 18px;border-bottom:1px solid #262626;font-size:13.5px;color:var(--muted)}
+.tbl td:first-child{color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+/* roadmap */
+.phase{display:grid;grid-template-columns:190px 1fr;gap:26px;padding:34px 0;border-top:1px solid var(--line)}
+@media(max-width:800px){.phase{grid-template-columns:1fr;gap:10px}}
+.phase .when{font-family:'Bebas Neue';font-size:26px;color:var(--yellow);line-height:1.1}
+.phase .when small{display:block;font-size:13px;color:var(--dim);letter-spacing:.1em;font-family:'Metrophobic','Noto Sans KR'}
+.phase h3{font-size:27px;text-transform:uppercase;margin-bottom:12px}
+.phase ul{list-style:none;display:grid;gap:9px}
+.phase li{padding-left:24px;position:relative;color:var(--muted);font-size:14.5px}
+.phase li::before{content:'▸';position:absolute;left:2px;color:var(--yellow)}
+.demo-link{display:inline-block;margin-left:10px;font-family:'Bebas Neue';font-size:12.5px;letter-spacing:.08em;color:#111;background:var(--yellow);border-radius:3px;padding:1px 8px;vertical-align:2px}
+.demo-link:hover{background:var(--yellow-dark)}
+.phase .done-tag{color:var(--green);font-size:11.5px;border:1px solid var(--green);border-radius:3px;padding:1px 7px;margin-left:10px;vertical-align:2px}
+/* why strip */
+.why{background:linear-gradient(rgba(15,16,16,.88),rgba(15,16,16,.94)),url('assets/fans-pano.png') center/cover}
+/* final cta */
+.final{background:linear-gradient(rgba(15,16,16,.55),rgba(15,16,16,.9)),url('assets/landing/worldseries-hero-arena.webp') center/cover;text-align:center;padding:130px 0}
+.final h2{font-size:clamp(44px,7vw,86px);text-transform:uppercase;line-height:.98}
+.final .yl{color:var(--yellow)}
+footer{border-top:1px solid var(--line);padding:44px 0;background:var(--bg2)}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+.foot img{height:22px;opacity:.9}
+.foot .fine{color:var(--dim);font-size:11.5px;max-width:720px;line-height:1.7}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="nav-logo" href="#top">
+      <img src="assets/logo.png" alt="ARENA TWO">
+      <span class="x">×</span>
+      <span class="alttown">ALT.TOWN</span>
+    </a>
+    <div class="nav-links">
+      <a href="#opportunity" data-i18n="nav_opportunity">Opportunity</a>
+      <a href="#alttown" data-i18n="nav_platform">The Platform</a>
+      <a href="#model" data-i18n="nav_model">Token Model</a>
+      <a href="#teams" data-i18n="nav_teams">7 Clubs</a>
+      <a href="#roadmap" data-i18n="nav_roadmap">Roadmap</a>
+    </div>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">한국어</button>
+    <a class="demo-btn" href="demo.html" data-i18n="nav_demo">LAUNCH DEMO ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="hero-tag" data-i18n="hero_tag">A STRATEGIC PROPOSAL FOR ARENA TWO</span>
+    <h1><span data-i18n="hero_l1">DON'T JUST VOTE.</span><br>
+        <span class="yl" data-i18n="hero_l2">TRADE YOUR CLUB.</span></h1>
+    <p class="sub" data-i18n="hero_sub">Every Arena Two franchise issues its own club token. Fans buy, trade, stake and vote inside one arena-grade exchange — powered by $ATWO, built on Alt.town's live, audited web 2.5 trading engine.</p>
+    <div class="hero-ctas">
+      <a class="cta primary" href="demo.html" data-i18n="hero_cta1">LAUNCH THE LIVE DEMO</a>
+      <a class="cta ghost" href="#opportunity" data-i18n="hero_cta2">READ THE PROPOSAL</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="n">7</div><div class="l" data-i18n="hs1">Club Tokens</div></div>
+      <div class="hstat"><div class="n">8</div><div class="l" data-i18n="hs2">Host Cities</div></div>
+      <div class="hstat"><div class="n">$8M</div><div class="l" data-i18n="hs3">Prize Pool</div></div>
+      <div class="hstat"><div class="n">1</div><div class="l" data-i18n="hs4">Token: $ATWO</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- QUOTE -->
+<div class="quote-strip">
+  <div class="wrap reveal">
+    <blockquote>
+      <span data-i18n="quote_1">"Fan token initiatives by traditional clubs have largely failed to deliver utility beyond shallow interactions."</span>
+      <span class="yl" data-i18n="quote_2">Arena Two owns its IP. Now give every club a real market.</span>
+    </blockquote>
+    <cite data-i18n="quote_cite">— Arena Two Whitepaper, §3 Industry Context</cite>
+  </div>
+</div>
+
+<!-- OPPORTUNITY -->
+<section id="opportunity">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-kicker" data-i18n="op_kicker">01 — The Opportunity</div>
+      <h2 class="sec-title" data-i18n="op_title">The whitepaper promises it.<br>The platform must deliver it.</h2>
+      <p class="sec-lead" data-i18n="op_lead">The $ATWO whitepaper defines six product modules — Watch, Vote, Stake, Earn, Teams, Marketplace — and a franchise model where fan staking funds club treasuries. What it doesn't yet have is the exchange layer that turns 7 franchises into 7 living fan economies. That layer already exists, live in production: Alt.town.</p>
+    </div>
+    <div class="grid3">
+      <div class="card reveal"><span class="num">WHITEPAPER §5 — VOTE &amp; STAKE</span><h3 data-i18n="op_c1t">Utility needs a market</h3><p data-i18n="op_c1p">Voting and staking create demand for tokens — but fans also need price discovery, liquidity and an exit. A per-club order book turns engagement into a real economy, not a one-way sink.</p></div>
+      <div class="card reveal"><span class="num">WHITEPAPER §11 — FRANCHISE MODEL</span><h3 data-i18n="op_c2t">7 clubs, 7 economies</h3><p data-i18n="op_c2p">Presidents with 15–60M followers each. Every franchise deserves its own token, its own treasury and its own fandom market — under one $ATWO reserve, on one platform.</p></div>
+      <div class="card reveal"><span class="num">WEB 2.5 — THE MISSING BRIDGE</span><h3 data-i18n="op_c3t">Fans aren't crypto natives</h3><p data-i18n="op_c3p">Arena Two already sells $99 memberships via Stripe. Alt.town's credit system (email sign-up, custodial wallets, pegged in-app credits) lets any football fan trade club tokens without ever touching a DEX.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ALT.TOWN -->
+<section id="alttown" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-kicker" data-i18n="at_kicker">02 — The Asset</div>
+      <h2 class="sec-title" data-i18n="at_title">Alt.town: a live IP-token<br>mini-exchange, ready to port</h2>
+      <p class="sec-lead" data-i18n="at_lead">Alt.town is the world's first platform where IP holders issue their own value token ("DNA") and fans trade it on a fully on-chain order book. It is not a deck — it is a shipped product: audited contracts, a 3-round presale engine, a pegged credit system, and a token already listed on exchanges. Acquiring it means Arena Two skips 12+ months of build and inherits a team that has already run a token migration end-to-end.</p>
+    </div>
+    <div class="proof reveal">
+      <div class="p"><div class="n" data-i18n="at_p1n">LIVE</div><div class="l" data-i18n="at_p1l">In production since 2024</div></div>
+      <div class="p"><div class="n">1,000,000</div><div class="l" data-i18n="at_p2l">Tokens issued per IP</div></div>
+      <div class="p"><div class="n">4,000 TPS</div><div class="l" data-i18n="at_p3l">On-chain order book (L2)</div></div>
+      <div class="p"><div class="n">MVB S8</div><div class="l" data-i18n="at_p4l">BNB Chain accelerator</div></div>
+    </div>
+    <div class="grid3">
+      <div class="card reveal"><h3 data-i18n="at_c1t">DNA Engine</h3><p data-i18n="at_c1p">Each IP issues 1M fungible tokens with programmatic allocation, lockups and vesting (30% IP / 10% presale / 20% community / 40% ecosystem). Battle-tested with live virtual-celebrity IPs — the exact machinery a sports franchise token needs.</p></div>
+      <div class="card reveal"><h3 data-i18n="at_c2t">3-Round Presale + Order Book</h3><p data-i18n="at_c2p">Fixed-price presale (50% off → 30% off → base price) that converts into open limit/market-order trading. 70%+ of presale revenue settles to the IP — for Arena Two, straight into franchise treasuries.</p></div>
+      <div class="card reveal"><h3 data-i18n="at_c3t">Web 2.5 Credit System</h3><p data-i18n="at_c3p">A pegged in-app credit (KEY) minted and burned against the platform token, plus free reward points (Mile) earned from engagement. Email sign-up, custodial wallets, fiat-friendly. Fans trade like it's a fantasy app; settlement is fully on-chain.</p></div>
+      <div class="card reveal"><h3 data-i18n="at_c4t">Governance Stack</h3><p data-i18n="at_c4p">Staking → ve-token → on-chain proposals, including per-IP governance where token holders vote on ecosystem unlocks and fee changes. Maps 1:1 onto the whitepaper's "Governance &amp; Protocol Upgrades" pillar.</p></div>
+      <div class="card reveal"><h3 data-i18n="at_c5t">Migration Experience</h3><p data-i18n="at_c5p">The team has already executed a full smart-contract migration and a token reallocation in production. Porting the stack from BNB/opBNB to Base is routine EVM work — the whitepaper itself cites full EVM compatibility as a reason Base was chosen.</p></div>
+      <div class="card reveal"><h3 data-i18n="at_c6t">Korea &amp; Asia Playbook</h3><p data-i18n="at_c6p">A Seoul-based product team fluent in K-fandom economics — the same fandom that powers Dokkaebi FC (Park Ji-sung + Xiumin) and the Seoul matchday at KSPO Dome, plus the Kuala Lumpur and Singapore legs of the tour.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL -->
+<section id="model">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-kicker" data-i18n="md_kicker">03 — The Model</div>
+      <h2 class="sec-title" data-i18n="md_title">One reserve. Seven markets.<br>Every fee feeds $ATWO.</h2>
+      <p class="sec-lead" data-i18n="md_lead">Alt.town's proven three-layer token architecture, re-based onto $ATWO. Club tokens are quoted in Arena Credits; credits are minted and burned exclusively against $ATWO — so every presale, every trade and every vote creates structural demand for the token you already listed.</p>
+    </div>
+    <div class="flow reveal">
+      <div class="flow-row">
+        <div class="fnode hl"><div class="t">$ATWO</div><div class="d" data-i18n="fn1">Reserve &amp; governance · Base · already listed on OKX and 9+ venues</div></div>
+        <div class="farrow">⇄<span data-i18n="fa1">mint / burn</span></div>
+        <div class="fnode"><div class="t">ARENA CREDITS</div><div class="d" data-i18n="fn2">Pegged in-app quote currency · card &amp; $ATWO top-up (web 2.5)</div></div>
+        <div class="farrow">⇄<span data-i18n="fa2">order book</span></div>
+        <div class="fnode"><div class="t" data-i18n="fn3t">CLUB TOKENS ×7</div><div class="d" data-i18n="fn3">$EAGL $IRON $OCTA $LOVE $DKB $SMBA $AME · 1M each, on-chain</div><div class="flow-crests" id="flowCrests"></div></div>
+        <div class="farrow">→<span data-i18n="fa3">utility</span></div>
+        <div class="fnode"><div class="t" data-i18n="fn4t">MATCHDAY</div><div class="d" data-i18n="fn4">Live votes · staking tiers · UP ONLY rewards · co-owner perks</div></div>
+      </div>
+    </div>
+    <div class="alloc reveal">
+      <h3 style="font-size:24px;text-transform:uppercase;margin-bottom:14px" data-i18n="alloc_t">Club token allocation — 1,000,000 per franchise</h3>
+      <div class="alloc-bar">
+        <div style="width:30%;background:#F3FF3D">30%</div>
+        <div style="width:10%;background:#e6e600">10%</div>
+        <div style="width:20%;background:#73d2d0">20%</div>
+        <div style="width:40%;background:#4a90e2">40%</div>
+      </div>
+      <div class="alloc-legend">
+        <span><span class="dot" style="background:#F3FF3D"></span><b data-i18n="al1b">Club &amp; President</b> — <span data-i18n="al1">vests 1%/month over 30 months</span></span>
+        <span><span class="dot" style="background:#e6e600"></span><b data-i18n="al2b">Presale</b> — <span data-i18n="al2">3 rounds during the World Series tour</span></span>
+        <span><span class="dot" style="background:#73d2d0"></span><b data-i18n="al3b">Community</b> — <span data-i18n="al3">airdrops, matchday events, co-owner rewards</span></span>
+        <span><span class="dot" style="background:#4a90e2"></span><b data-i18n="al4b">Ecosystem</b> — <span data-i18n="al4">unlocked by token-holder governance</span></span>
+      </div>
+    </div>
+    <div class="econ reveal">
+      <table class="tbl">
+        <tr><th data-i18n="ec_h1">Revenue stream</th><th data-i18n="ec_h2">Mechanics (ported from Alt.town)</th><th data-i18n="ec_h3">Where it flows</th></tr>
+        <tr><td data-i18n="ec_r1a">Club token presale</td><td data-i18n="ec_r1b">3 fixed-price rounds per club, timed with each host city on the tour</td><td data-i18n="ec_r1c">70% franchise treasury · 20% prize pool · 10% platform</td></tr>
+        <tr><td data-i18n="ec_r2a">Trading fee (1%)</td><td data-i18n="ec_r2b">Every order-book execution, buy and sell side</td><td data-i18n="ec_r2c">50% $ATWO buyback &amp; burn · 25% club · 25% platform</td></tr>
+        <tr><td data-i18n="ec_r3a">Matchday voting</td><td data-i18n="ec_r3b">Votes are cast in credits / club tokens; co-owners get a 1.5× multiplier</td><td data-i18n="ec_r3c">Sponsored vote slots + token sink per whitepaper §9</td></tr>
+        <tr><td data-i18n="ec_r4a">Staking</td><td data-i18n="ec_r4b">Stake club tokens → co-owner tiers, prize-pool share, ve-governance</td><td data-i18n="ec_r4c">Locks supply; whitepaper example: 50k fans × $300 = $15M staked</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TEAMS -->
+<section id="teams" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-kicker" data-i18n="tm_kicker">04 — The Listings</div>
+      <h2 class="sec-title" data-i18n="tm_title">Seven franchises.<br>Seven opening bells.</h2>
+      <p class="sec-lead" data-i18n="tm_lead">Each club token launches with its home-city matchday — a presale that opens the week of the fixture, and an order book that rings open at kickoff. Token launches become live events; live events become listings.</p>
+    </div>
+    <div class="teams-grid">
+      <div class="tcard reveal"><span class="crest-float" data-crest="EAGL"></span><div class="ph" style="background-image:url('assets/landing/team/khabib.webp')"></div><div class="body"><span class="tik" style="background:#E8B54A">$EAGL</span><h3>Eagles FC</h3><div class="pres">Khabib Nurmagomedov</div><div class="city">Dagestan</div></div></div>
+      <div class="tcard reveal"><span class="crest-float" data-crest="IRON"></span><div class="ph" style="background-image:url('assets/landing/team/boateng.webp')"></div><div class="body"><span class="tik" style="background:#C4CDD6">$IRON</span><h3>FC Iron 10</h3><div class="pres">Jérôme Boateng</div><div class="city">Munich</div></div></div>
+      <div class="tcard reveal"><span class="crest-float" data-crest="OCTA"></span><div class="ph" style="background-image:url('assets/landing/team/mvp.webp')"></div><div class="body"><span class="tik" style="background:#D9A94A">$OCTA</span><h3>Octa FC</h3><div class="pres">Michael "Venom" Page + Dakota Ditcheva</div><div class="city">Manchester</div></div></div>
+      <div class="tcard reveal"><span class="crest-float" data-crest="LOVE"></span><div class="ph" style="background-image:url('assets/landing/team/evra.webp')"></div><div class="body"><span class="tik" style="background:#D98A8F">$LOVE</span><h3>Love This Game FC</h3><div class="pres">Patrice Evra</div><div class="city">Paris</div></div></div>
+      <div class="tcard reveal"><span class="crest-float" data-crest="DKB"></span><div class="ph" style="background-image:url('assets/landing/team/park.webp')"></div><div class="body"><span class="tik" style="background:#D0353F">$DKB</span><h3>Dokkaebi FC</h3><div class="pres">Park Ji-sung + Xiumin</div><div class="city">Seoul</div></div></div>
+      <div class="tcard reveal"><span class="crest-float" data-crest="SMBA"></span><div class="ph" style="background-image:url('assets/landing/team/atletico-samba.webp')"></div><div class="body"><span class="tik" style="background:#F2A7C3">$SMBA</span><h3>Atlético Samba</h3><div class="pres">Júlio César + Luva de Pedreiro</div><div class="city">Rio de Janeiro</div></div></div>
+      <div class="tcard reveal"><span class="presale-flag" data-i18n="tm_presale">PRESALE LIVE</span><span class="crest-float" data-crest="AME"></span><div class="ph" style="background-image:url('assets/landing/team/club-america-2026.webp')"></div><div class="body"><span class="tik" style="background:#F9E547">$AME</span><h3>Club América</h3><div class="pres" data-i18n="tm_tbc">President TBC</div><div class="city">Mexico City</div></div></div>
+      <div class="tcard reveal" style="display:flex;align-items:center;justify-content:center;min-height:330px;border-style:dashed">
+        <div style="text-align:center;padding:24px">
+          <div style="font-family:'Bebas Neue';font-size:44px;color:var(--yellow)">+</div>
+          <h3 style="font-size:22px;text-transform:uppercase" data-i18n="tm_next_t">Next listing</h3>
+          <p style="color:var(--dim);font-size:12.5px;margin-top:6px" data-i18n="tm_next_p">MMA · cricket · creator franchises — every new Arena Two vertical is a new token launch (Whitepaper §13, Phase 2–3)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-kicker" data-i18n="rd_kicker">05 — The Roadmap</div>
+      <h2 class="sec-title" data-i18n="rd_title">From whitepaper to matchday.<br>Every step is already in the demo.</h2>
+      <p class="sec-lead" data-i18n="rd_lead">A four-phase plan that follows the $ATWO whitepaper's own go-to-market (§13, §15) — accelerated by acquiring a working platform instead of building one. Every feature below is fully interactive in the demo today.</p>
+    </div>
+
+    <div style="margin-top:50px">
+      <div class="phase reveal">
+        <div class="when">PHASE 0<small data-i18n="ph0_when">Deal close → 90 days</small></div>
+        <div>
+          <h3 data-i18n="ph0_t">Integration &amp; port to Base</h3>
+          <ul>
+            <li data-i18n="ph0_1">Port the DNA engine, order book and credit system from BNB/opBNB to Base (full EVM compatibility — whitepaper §12).</li>
+            <li data-i18n="ph0_2">$TOWN → $ATWO migration playbook: the Alt.town team has already executed a production contract migration.</li>
+            <li data-i18n="ph0_3">Rebrand credit layer as Arena Credits; wire Stripe rails already used for $99 co-owner memberships.<a class="demo-link" href="demo.html#wallet">LIVE IN DEMO ↗</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase reveal">
+        <div class="when">PHASE 1<small data-i18n="ph1_when">Q3 2026 · World Series</small></div>
+        <div>
+          <h3 data-i18n="ph1_t">Seven token launches, city by city</h3>
+          <ul>
+            <li data-i18n="ph1_1">Club token presales open the week of each host-city fixture: Rio → Mexico City → Manchester → Lisbon → Paris → Seoul → KL → Singapore.<a class="demo-link" href="demo.html#presale">LIVE IN DEMO ↗</a></li>
+            <li data-i18n="ph1_2">Order-book trading rings open at kickoff — limit &amp; market orders, live charts, 1% fee with $ATWO burn.<a class="demo-link" href="demo.html#town">LIVE IN DEMO ↗</a></li>
+            <li data-i18n="ph1_3">Matchday voting powered by tokens: power plays, keeper pulls, Playmaker picks — co-owners vote with a 1.5× multiplier.<a class="demo-link" href="demo.html#matchday">LIVE IN DEMO ↗</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase reveal">
+        <div class="when">PHASE 2<small data-i18n="ph2_when">Q4 2026</small></div>
+        <div>
+          <h3 data-i18n="ph2_t">Staking, rewards &amp; new verticals</h3>
+          <ul>
+            <li data-i18n="ph2_1">Club staking with co-owner tiers and prize-pool share (whitepaper §10 mechanics, live product UX).<a class="demo-link" href="demo.html#staking">LIVE IN DEMO ↗</a></li>
+            <li data-i18n="ph2_2">UP ONLY predictions pay weekly prizes in club tokens; free Fan Points convert to Arena Credits — the engagement-to-economy loop.<a class="demo-link" href="demo.html#uponly">LIVE IN DEMO ↗</a></li>
+            <li data-i18n="ph2_3">MMA and cricket franchises launch as new listings — the exchange motion becomes Arena Two's expansion engine.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase reveal">
+        <div class="when">PHASE 3<small data-i18n="ph3_when">2027</small></div>
+        <div>
+          <h3 data-i18n="ph3_t">Creator tools &amp; open governance</h3>
+          <ul>
+            <li data-i18n="ph3_1">Creator toolkit: any icon, league or show launches a token under the Arena Town framework (whitepaper §13 Phase 3) — Alt.town's IP-onboarding flow, rebranded.</li>
+            <li data-i18n="ph3_2">veATWO governance: stake $ATWO to vote on ecosystem unlocks, fee changes and new listings — per-club governance included.<a class="demo-link" href="demo.html#governance">LIVE IN DEMO ↗</a></li>
+            <li data-i18n="ph3_3">Marketplace: token-gated collectibles and merch drops tied to club-token holdings (whitepaper §5 Marketplace).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-kicker" data-i18n="wh_kicker">06 — Why this deal</div>
+      <h2 class="sec-title" data-i18n="wh_title">Buy the 12 months.<br>Keep the momentum.</h2>
+    </div>
+    <div class="grid3">
+      <div class="card yl reveal"><h3 data-i18n="wh_c1t">Time to market</h3><p data-i18n="wh_c1p">The World Series kicks off 15 August 2026. Building an exchange-grade token platform in-house cannot make that window; acquiring a live, audited one can. Launch club tokens with Matchday One in Rio.</p></div>
+      <div class="card yl reveal"><h3 data-i18n="wh_c2t">Web 2.5 credibility</h3><p data-i18n="wh_c2p">The market punishes shallow fan tokens. Alt.town's model — custodial UX, pegged credits, on-chain settlement, real revenue share to IP — is engineered for mainstream fans first and crypto second. That is the sentiment-proof posture.</p></div>
+      <div class="card yl reveal"><h3 data-i18n="wh_c3t">Asia execution</h3><p data-i18n="wh_c3p">Seoul, Kuala Lumpur and Singapore host three of eight matchdays, and the finale lands at Token2049 Singapore. A Seoul-native team with exchange relationships and K-fandom fluency is the regional engine Arena Two doesn't have yet.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="wrap reveal">
+    <h2><span data-i18n="fin_1">THE WHITEPAPER WROTE THE PLAY.</span><br><span class="yl" data-i18n="fin_2">THE PLATFORM RUNS IT.</span></h2>
+    <p style="color:var(--muted);margin:22px auto 36px;max-width:560px" data-i18n="fin_sub">Open the interactive demo — 100% Arena Two branded, every roadmap feature working, in English and Korean.</p>
+    <a class="cta primary" href="demo.html" style="font-size:24px;padding:18px 52px" data-i18n="fin_cta">GAME ON — LAUNCH DEMO</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <img src="assets/logo.png" alt="ARENA TWO">
+    <p class="fine" data-i18n="foot_fine">This document is a concept proposal prepared for discussion between Alt.town and Arena Two. It is not an offer to sell securities or tokens, nor financial advice. All figures shown in the demo are simulated for illustration. Arena Two, $ATWO, team names and likenesses belong to their respective owners. Alt.town, DNA, KEY and $TOWN are trademarks of their respective owners.</p>
+  </div>
+</footer>
+
+<script src="assets/crests.js"></script>
+<script>
+/* ---------- i18n ---------- */
+const I18N = {
+  kr: {
+    nav_opportunity:"기회", nav_platform:"플랫폼", nav_model:"토큰 모델", nav_teams:"7개 구단", nav_roadmap:"로드맵", nav_demo:"데모 실행 ↗",
+    hero_tag:"ARENA TWO를 위한 전략 제안",
+    hero_l1:"투표를 넘어,", hero_l2:"당신의 구단을 거래하세요.",
+    hero_sub:"Arena Two의 모든 프랜차이즈가 자신만의 구단 토큰을 발행합니다. 팬은 하나의 아레나급 거래소에서 사고, 팔고, 스테이킹하고, 투표합니다 — $ATWO로 구동되고, 이미 검증된 Alt.town의 web 2.5 트레이딩 엔진 위에서.",
+    hero_cta1:"라이브 데모 실행", hero_cta2:"제안서 읽기",
+    hs1:"구단 토큰", hs2:"개최 도시", hs3:"상금 풀", hs4:"단일 토큰: $ATWO",
+    quote_1:"“기존 구단들의 팬토큰은 피상적인 상호작용 이상의 유틸리티를 제공하는 데 대부분 실패했다.”",
+    quote_2:"Arena Two는 IP를 직접 소유합니다. 이제 모든 구단에 진짜 시장을 열어주세요.",
+    quote_cite:"— Arena Two 백서, §3 Industry Context",
+    op_kicker:"01 — 기회", op_title:"백서가 약속한 것,<br>플랫폼이 실현해야 합니다.",
+    op_lead:"$ATWO 백서는 Watch, Vote, Stake, Earn, Teams, Marketplace 여섯 개의 프로덕트 모듈과, 팬 스테이킹이 구단 재정을 채우는 프랜차이즈 모델을 정의합니다. 아직 없는 것은 7개 프랜차이즈를 7개의 살아있는 팬 경제로 바꿔줄 거래소 레이어입니다. 그 레이어는 이미 실서비스로 존재합니다: Alt.town.",
+    op_c1t:"유틸리티에는 시장이 필요합니다", op_c1p:"투표와 스테이킹은 토큰 수요를 만들지만, 팬에게는 가격 발견·유동성·출구도 필요합니다. 구단별 오더북은 참여를 일방적 소각이 아닌 진짜 경제로 만듭니다.",
+    op_c2t:"7개 구단, 7개의 경제", op_c2p:"각 프레지던트의 팔로워는 1,500만~6,000만 명. 모든 프랜차이즈는 자신만의 토큰, 재정, 팬덤 마켓을 가질 자격이 있습니다 — 하나의 $ATWO 리저브, 하나의 플랫폼 위에서.",
+    op_c3t:"팬은 크립토 네이티브가 아닙니다", op_c3p:"Arena Two는 이미 $99 멤버십을 Stripe로 판매합니다. Alt.town의 크레딧 시스템(이메일 가입, 커스터디 지갑, 페그된 인앱 크레딧)이라면 어떤 축구팬도 DEX를 몰라도 구단 토큰을 거래할 수 있습니다.",
+    at_kicker:"02 — 인수 대상", at_title:"Alt.town: 실서비스 중인<br>IP 토큰 미니 거래소",
+    at_lead:"Alt.town은 IP 보유자가 자신의 가치 토큰(“DNA”)을 발행하고 팬이 완전한 온체인 오더북에서 거래하는 세계 최초의 플랫폼입니다. 장표가 아니라 이미 출시된 제품입니다: 감사 완료된 컨트랙트, 3라운드 프리세일 엔진, 페그된 크레딧 시스템, 그리고 이미 거래소에 상장된 토큰. 인수하면 Arena Two는 12개월 이상의 개발을 건너뛰고, 토큰 마이그레이션을 실전에서 완주해 본 팀을 얻습니다.",
+    at_p1n:"LIVE", at_p1l:"2024년부터 실서비스", at_p2l:"IP당 토큰 발행량", at_p3l:"온체인 오더북 (L2)", at_p4l:"BNB 체인 액셀러레이터",
+    at_c1t:"DNA 엔진", at_c1p:"각 IP가 100만 개의 대체가능 토큰을 발행하며 할당·락업·베스팅이 프로그램으로 관리됩니다(IP 30% / 프리세일 10% / 커뮤니티 20% / 에코시스템 40%). 실제 버추얼 셀럽 IP로 검증된, 스포츠 프랜차이즈 토큰에 그대로 필요한 기계장치입니다.",
+    at_c2t:"3라운드 프리세일 + 오더북", at_c2p:"고정가 프리세일(50% 할인 → 30% 할인 → 정가)이 끝나면 지정가/시장가 주문의 자유 거래로 전환됩니다. 프리세일 수익의 70% 이상이 IP에 정산됩니다 — Arena Two라면 곧바로 구단 재정으로.",
+    at_c3t:"Web 2.5 크레딧 시스템", at_c3p:"플랫폼 토큰과 연동해 발행·소각되는 페그된 인앱 크레딧(KEY), 참여로 얻는 무료 포인트(Mile). 이메일 가입, 커스터디 지갑, 법정화폐 친화적. 팬은 판타지 앱처럼 거래하고, 정산은 전부 온체인입니다.",
+    at_c4t:"거버넌스 스택", at_c4p:"스테이킹 → ve토큰 → 온체인 제안. 토큰 홀더가 에코시스템 언락과 수수료 변경에 투표하는 IP별 거버넌스까지 포함합니다. 백서의 “Governance & Protocol Upgrades” 항목과 1:1로 대응됩니다.",
+    at_c5t:"마이그레이션 경험", at_c5p:"이 팀은 이미 실서비스에서 스마트컨트랙트 마이그레이션과 토큰 재할당을 완수했습니다. BNB/opBNB에서 Base로의 포팅은 일상적인 EVM 작업입니다 — 백서 스스로 Base 선택 이유로 완전한 EVM 호환성을 꼽습니다.",
+    at_c6t:"한국 & 아시아 플레이북", at_c6p:"K-팬덤 경제에 능통한 서울 기반 프로덕트 팀 — Dokkaebi FC(박지성 + 시우민)와 KSPO돔 서울 매치데이, 쿠알라룸푸르·싱가포르 투어를 움직이는 바로 그 팬덤입니다.",
+    md_kicker:"03 — 모델", md_title:"하나의 리저브, 일곱 개의 마켓.<br>모든 수수료가 $ATWO로 흐릅니다.",
+    md_lead:"Alt.town의 검증된 3계층 토큰 아키텍처를 $ATWO 기반으로 재구성했습니다. 구단 토큰은 아레나 크레딧으로 호가되고, 크레딧은 오직 $ATWO에 대해서만 발행·소각됩니다 — 모든 프리세일, 거래, 투표가 이미 상장된 토큰의 구조적 수요를 만듭니다.",
+    fn1:"리저브 & 거버넌스 · Base · OKX 등 9개+ 거래소 상장", fa1:"발행 / 소각",
+    fn2:"페그된 인앱 호가 화폐 · 카드 & $ATWO 충전 (web 2.5)", fa2:"오더북",
+    fn3t:"구단 토큰 ×7", fn3:"$EAGL $IRON $OCTA $LOVE $DKB $SMBA $AME · 각 100만 개, 온체인", fa3:"유틸리티",
+    fn4t:"매치데이", fn4:"라이브 투표 · 스테이킹 등급 · UP ONLY 보상 · 공동구단주 혜택",
+    alloc_t:"구단 토큰 할당 — 프랜차이즈당 1,000,000개",
+    al1b:"구단 & 프레지던트", al1:"30개월간 월 1% 베스팅",
+    al2b:"프리세일", al2:"월드시리즈 투어 기간 3라운드",
+    al3b:"커뮤니티", al3:"에어드랍, 매치데이 이벤트, 공동구단주 보상",
+    al4b:"에코시스템", al4:"토큰 홀더 거버넌스로 언락",
+    ec_h1:"수익원", ec_h2:"메커니즘 (Alt.town에서 이식)", ec_h3:"흐름",
+    ec_r1a:"구단 토큰 프리세일", ec_r1b:"구단별 3회 고정가 라운드, 투어의 각 개최 도시 일정과 연동", ec_r1c:"70% 구단 재정 · 20% 상금 풀 · 10% 플랫폼",
+    ec_r2a:"거래 수수료 (1%)", ec_r2b:"오더북 체결마다 매수·매도 양측에 부과", ec_r2c:"50% $ATWO 바이백&소각 · 25% 구단 · 25% 플랫폼",
+    ec_r3a:"매치데이 투표", ec_r3b:"크레딧/구단 토큰으로 투표, 공동구단주는 1.5× 배수", ec_r3c:"스폰서 투표 슬롯 + 토큰 싱크 (백서 §9)",
+    ec_r4a:"스테이킹", ec_r4b:"구단 토큰 스테이킹 → 공동구단주 등급, 상금 풀 지분, ve-거버넌스", ec_r4c:"공급 락업 — 백서 예시: 팬 5만 명 × $300 = $15M",
+    tm_kicker:"04 — 상장 목록", tm_title:"일곱 프랜차이즈,<br>일곱 번의 개장 벨.",
+    tm_lead:"각 구단 토큰은 홈 도시 매치데이와 함께 런칭합니다 — 경기 주간에 프리세일이 열리고, 킥오프와 함께 오더북이 개장합니다. 토큰 런칭이 라이브 이벤트가 되고, 라이브 이벤트가 상장이 됩니다.",
+    tm_presale:"프리세일 진행중", tm_tbc:"프레지던트 미정",
+    tm_next_t:"다음 상장", tm_next_p:"MMA · 크리켓 · 크리에이터 프랜차이즈 — Arena Two의 모든 신규 버티컬이 새로운 토큰 런칭입니다 (백서 §13, Phase 2–3)",
+    rd_kicker:"05 — 로드맵", rd_title:"백서에서 매치데이까지.<br>모든 단계가 이미 데모에 있습니다.",
+    rd_lead:"$ATWO 백서의 go-to-market(§13, §15)을 그대로 따르는 4단계 계획 — 직접 개발 대신 작동하는 플랫폼을 인수해 가속합니다. 아래 모든 기능은 오늘 데모에서 완전히 인터랙티브하게 동작합니다.",
+    ph0_when:"딜 클로징 → 90일", ph0_t:"통합 & Base 포팅",
+    ph0_1:"DNA 엔진·오더북·크레딧 시스템을 BNB/opBNB에서 Base로 포팅 (완전한 EVM 호환 — 백서 §12).",
+    ph0_2:"$TOWN → $ATWO 마이그레이션 플레이북: Alt.town 팀은 이미 실서비스 컨트랙트 마이그레이션을 완수했습니다.",
+    ph0_3:"크레딧 레이어를 아레나 크레딧으로 리브랜딩; $99 공동구단주 멤버십에 이미 쓰이는 Stripe 결제와 연결.",
+    ph1_when:"2026 3Q · 월드시리즈", ph1_t:"도시별로 이어지는 7번의 토큰 런칭",
+    ph1_1:"각 개최 도시 경기 주간에 구단 토큰 프리세일 오픈: 리우 → 멕시코시티 → 맨체스터 → 리스본 → 파리 → 서울 → KL → 싱가포르.",
+    ph1_2:"킥오프와 함께 오더북 개장 — 지정가·시장가 주문, 라이브 차트, $ATWO 소각이 포함된 1% 수수료.",
+    ph1_3:"토큰으로 구동되는 매치데이 투표: 파워플레이, 키퍼 아웃, 플레이메이커 지명 — 공동구단주는 1.5× 배수로 투표.",
+    ph2_when:"2026 4Q", ph2_t:"스테이킹, 보상 & 신규 버티컬",
+    ph2_1:"공동구단주 등급과 상금 풀 지분이 있는 구단 스테이킹 (백서 §10 메커니즘, 실제 제품 UX).",
+    ph2_2:"UP ONLY 예측 게임이 구단 토큰으로 주간 상금 지급; 무료 팬 포인트는 아레나 크레딧으로 전환 — 참여가 경제로 이어지는 루프.",
+    ph2_3:"MMA·크리켓 프랜차이즈가 신규 상장으로 런칭 — 거래소 모션이 Arena Two의 확장 엔진이 됩니다.",
+    ph3_when:"2027", ph3_t:"크리에이터 도구 & 오픈 거버넌스",
+    ph3_1:"크리에이터 툴킷: 어떤 아이콘·리그·쇼도 Arena Town 프레임워크로 토큰을 런칭 (백서 §13 Phase 3) — Alt.town의 IP 온보딩 플로우를 리브랜딩.",
+    ph3_2:"veATWO 거버넌스: $ATWO를 스테이킹해 에코시스템 언락·수수료 변경·신규 상장에 투표 — 구단별 거버넌스 포함.",
+    ph3_3:"마켓플레이스: 구단 토큰 보유량과 연동된 토큰 게이트 콜렉터블·머치 드랍 (백서 §5 Marketplace).",
+    wh_kicker:"06 — 왜 이 딜인가", wh_title:"12개월을 사서,<br>모멘텀을 지키세요.",
+    wh_c1t:"시장 진입 속도", wh_c1p:"월드시리즈는 2026년 8월 15일 개막합니다. 거래소급 토큰 플랫폼을 자체 개발해서는 이 창을 맞출 수 없습니다. 감사 완료된 라이브 플랫폼 인수라면 가능합니다. 리우 매치데이 원과 함께 구단 토큰을 런칭하세요.",
+    wh_c2t:"Web 2.5 신뢰성", wh_c2p:"시장은 얄팍한 팬토큰을 응징합니다. Alt.town 모델 — 커스터디 UX, 페그 크레딧, 온체인 정산, IP에 대한 실질 수익 배분 — 은 크립토보다 일반 팬을 먼저 고려해 설계됐습니다. 그것이 부정적 여론에도 견디는 자세입니다.",
+    wh_c3t:"아시아 실행력", wh_c3p:"서울·쿠알라룸푸르·싱가포르가 8개 매치데이 중 3개를 개최하고, 피날레는 Token2049 싱가포르와 겹칩니다. 거래소 네트워크와 K-팬덤 감각을 갖춘 서울 네이티브 팀은 Arena Two에 아직 없는 지역 엔진입니다.",
+    fin_1:"백서가 전술을 그렸다면,", fin_2:"플랫폼이 그것을 실행합니다.",
+    fin_sub:"인터랙티브 데모를 열어보세요 — 100% Arena Two 브랜딩, 모든 로드맵 기능 작동, 영어·한국어 지원.",
+    fin_cta:"GAME ON — 데모 실행",
+    foot_fine:"본 문서는 Alt.town과 Arena Two 간 논의를 위해 준비된 컨셉 제안서입니다. 증권 또는 토큰의 판매 제안이나 금융 자문이 아닙니다. 데모의 모든 수치는 설명을 위한 시뮬레이션입니다. Arena Two, $ATWO, 팀명과 초상권은 각 소유자에게 귀속됩니다. Alt.town, DNA, KEY, $TOWN은 각 소유자의 상표입니다."
+  }
+};
+const EN = {};
+function snapshotEN(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ EN[el.dataset.i18n] = el.innerHTML; });
+}
+function applyLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.dataset.i18n;
+    if(lang==='kr' && I18N.kr[k]) el.innerHTML = I18N.kr[k];
+    else if(lang==='en' && EN[k]!==undefined) el.innerHTML = EN[k];
+  });
+  document.body.classList.toggle('kr', lang==='kr');
+  document.getElementById('langBtn').textContent = lang==='kr' ? 'EN' : '한국어';
+  document.documentElement.lang = lang==='kr'?'ko':'en';
+  localStorage.setItem('at_lang', lang);
+  // re-append demo links stripped by innerHTML replacement in roadmap items
+  fixDemoLinks(lang);
+}
+const DEMO_LINKS = {ph0_3:'demo.html#wallet', ph1_1:'demo.html#presale', ph1_2:'demo.html#town', ph1_3:'demo.html#matchday', ph2_1:'demo.html#staking', ph2_2:'demo.html#uponly', ph3_2:'demo.html#governance'};
+function fixDemoLinks(lang){
+  Object.entries(DEMO_LINKS).forEach(([k,href])=>{
+    const el = document.querySelector(`[data-i18n="${k}"]`);
+    if(el && !el.querySelector('.demo-link')){
+      const a = document.createElement('a');
+      a.className='demo-link'; a.href=href; a.textContent = lang==='kr' ? '데모에서 보기 ↗' : 'LIVE IN DEMO ↗';
+      el.appendChild(a);
+    } else if(el){
+      el.querySelector('.demo-link').textContent = lang==='kr' ? '데모에서 보기 ↗' : 'LIVE IN DEMO ↗';
+    }
+  });
+}
+function toggleLang(){
+  const cur = localStorage.getItem('at_lang')||'en';
+  applyLang(cur==='en'?'kr':'en');
+}
+snapshotEN();
+applyLang(localStorage.getItem('at_lang')||'en');
+
+/* ---------- scroll reveal (IO + scroll fallback for maximum compatibility) ---------- */
+const revealEls = Array.from(document.querySelectorAll('.reveal'));
+function checkReveal(){
+  const vh = window.innerHeight;
+  revealEls.forEach(el=>{
+    if(el.classList.contains('in')) return;
+    const r = el.getBoundingClientRect();
+    if(r.top < vh*0.92 && r.bottom > 0) el.classList.add('in');
+  });
+}
+try{
+  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:.08});
+  revealEls.forEach(el=>io.observe(el));
+}catch(e){}
+['scroll','resize','load'].forEach(ev=>window.addEventListener(ev,checkReveal,{passive:true}));
+setInterval(checkReveal, 600);
+checkReveal();
+
+/* ---------- team crests ---------- */
+document.querySelectorAll('[data-crest]').forEach(el=>{ const s=CREST_SRC[el.dataset.crest]; el.innerHTML = s?`<img src="${s}" alt="${el.dataset.crest}" loading="lazy">`:(CRESTS[el.dataset.crest]||''); });
+document.getElementById('flowCrests').innerHTML = ['EAGL','IRON','OCTA','LOVE','DKB','SMBA','AME'].map(id=>`<span><img src="${CREST_SRC[id]}" alt="${id}"></span>`).join('');
+</script>
+</body>
+</html>

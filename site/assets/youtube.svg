@@ -1,0 +1,12 @@
+<svg width="current" height="current" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<!-- mask: white area shows the red shape, black (triangle) will be transparent -->
+		<mask id="yt-mask">
+			<rect x="0" y="0" width="30" height="30" fill="white" />
+			<!-- triangle cutout (transparent area) -->
+			<path d="M12.75 11.25l6 3.75-6 3.75v-7.5z" fill="black"/>
+		</mask>
+	</defs>
+	<!-- rounded-capsule background (white in asset, displayed on dark circle background) -->
+	<path d="M24.75 8.25c-.322-1.213-.993-2.17-2.152-2.432C19.793 5.25 15 5.25 15 5.25s-4.792 0-7.598.568c-1.159.262-1.83 1.219-2.152 2.432C4.5 11.06 4.5 15 4.5 15s0 3.94.75 6.75c.322 1.213.993 2.17 2.152 2.432C10.208 25.5 15 25.5 15 25.5s4.793 0 7.598-.568c1.159-.262 1.83-1.219 2.152-2.432.75-2.81.75-6.75.75-6.75s0-3.94-.75-6.75z" fill="white" mask="url(#yt-mask)"/>
+</svg>

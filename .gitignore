@@ -1,0 +1,6 @@
+# ⚠️ 내부 전략 문서 — public 레포에 절대 올리지 않습니다 (배포는 서버 직접 전송)
+internal/
+
+.DS_Store
+*.log
+node_modules/
